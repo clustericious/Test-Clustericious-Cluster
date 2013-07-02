@@ -54,7 +54,7 @@ BEGIN { $ENV{MOJO_LOG_LEVEL} = 'fatal' }
 
 =head1 CONSTRUCTOR
 
-=head2 Test::Clustericious::Cluster->new
+=head2 Test::Clustericious::Cluster->new( [ $t ] )
 
 Optionally takes an instace of Test::Mojo as its argument.
 If not provided, then a new one will be created.
@@ -134,7 +134,7 @@ sub url { shift->{url} }
 
 =head1 METHODS
 
-=head2 create_cluster_ok @services
+=head2 $cluster-E<gt>create_cluster_ok @services
 
 Adds the given services to the test cluster.
 Each element in the services array may be either
