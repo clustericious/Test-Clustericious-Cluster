@@ -10,64 +10,64 @@ version 0.01
 
 =head1 SYNOPSIS
 
- use Test::Clustericious::Config;
  use Test::Clustericious::Cluster;
 
- create_cluster_ok;
+ my $cluster = Test::Clustericious::Cluster->new;
+ $cluster->create_cluster_ok('MyApp1', 'MyApp2');
+
+ my @urls = @{ $cluster->urls };
+ my $t = $cluster->t; # an instance of Test::Mojo
+ 
+ $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
+ $t->get_ok("$url[1]/another_path");    # tests against MyApp2
+
+=head1 DESCRIPTION
+
+This module allows you to test an entire cluster of Clustericious services
+(or just one or two).  The only prerequsisites are L<Mojolicious> and 
+L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
+apps and test how they interact.
 
 =head1 NAME
 
 Test::Clustericious::Cluster - test an imaginary beowulf cluster of clustericious services
 
+=head1 CONSTRUCTOR
+
+=head2 Test::Clustericious::Cluster->new
+
+Optionally takes an instace of Test::Mojo as its argument.
+If not provided, then a new one will be created.
+
+=head1 ATTRIBUTES
+
+=head2 t
+
+The instance of Test::Mojo used in testing.
+
+=head2 urls
+
+The URLs for the various services.
+Returned as an array ref.
+
+=head2 apps
+
+The application objects for the various services.
+Returned as an array ref.
+
+=head2 index
+
+The index of the current app (used from within a 
+L<Clustericious::Config> configuration.
+
+=head2 url
+
+The url of the current app (used from within a
+L<Clustericious::Config> configuration.
+
 =head1 METHODS
 
 =head2 create_cluster_ok 
-
-sub create_cluster_ok
-{
-  my $t;
-
-  if(ref $_[0] && eval { $_[0]->isa('Test::Mojo'))
-  { $t = shift }
-  else
-  { $t = Test::Mojo->new }
-
-  my $total = scalar @_;
-  my @urls = map { 
-    my $url = Mojo::URL->new("http://127.0.0.1");
-    $url->port($t->ua->ioloop->generate_port);
-    $url } (0..$total);
-  
-  my @apps;
-
-  my $index;
-  
-  eval {
-    for($i=0; $i<@_; $i++)
-    {
-      state $keepers = [];
-      my $server = Mojo::Server::Daenmon->new(
-        ioloop => $t->ua->ioloop,
-        silent => 1,
-      );
-      $server->listen(["$urls[$i]"]);
-      my $app_name = $_[$i];
-      my $app = eval qq{ use $app_name; $app_name->new };
-      die $@ if $@;
-      $server->app($app);
-      $server->start;
-      push @$keepers, $server;
-    }
-  };
-  my $error = $@;
-  
-  my $tb = __PACKAGE__->builder;
-  $tb->ok($error eq '', "created cluster");
-  $tb->diag("exception: $error") if $error;
-  return wantarray $t ? ($t, @urls) : $t;
-}
-
-1;
 
 =head1 AUTHOR
 

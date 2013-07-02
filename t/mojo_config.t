@@ -24,7 +24,7 @@ $t->get_ok("$url/bar")
 package
   Foo;
 
-use base qw( Mojolicious );
+use Mojo::Base qw( Mojolicious );
 
 BEGIN { $INC{"Foo.pm"} = __FILE__ }
 
