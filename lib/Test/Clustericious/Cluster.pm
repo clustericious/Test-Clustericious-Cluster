@@ -15,6 +15,7 @@ BEGIN {
 use File::HomeDir;
 use Mojo::URL;
 use Test::Mojo;
+use Mojo::Loader;
 use base qw( Test::Builder::Module );
 
 # ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
@@ -76,7 +77,7 @@ sub new
     builder => $builder, 
     urls    => [], 
     apps    => [], 
-    index   => 0,
+    index   => -1,
     url     => '', 
     servers => [],
   }, $class;
@@ -181,8 +182,13 @@ sub create_cluster_ok
   
   my $has_clustericious_config = 0;
   
+  my $loader = Mojo::Loader->new;
+  my $caller = caller;
+  $loader->load($caller);
+  
   foreach my $i (0..$#_)
   {
+    $self->{index}++;
     $self->{url} = shift @urls;
     my $server = Mojo::Server::Daemon->new(
       ioloop => $self->t->ua->ioloop,
@@ -191,9 +197,15 @@ sub create_cluster_ok
     
     my $app_name;
     my $config = {};
-    if(ref $_[$i] eq 'ARRAY')
+    my $item = $_[$i];
+    if(ref($item) eq '' && $loader->data($caller, "$item.conf"))
     {
-      ($app_name, $config) = @{ $_[$i] };
+      $item = [ $item, $loader->data($caller, "$item.conf") ];
+    }
+
+    if(ref $item eq 'ARRAY')
+    {
+      ($app_name, $config) = @{ $item };
       unless(ref $config)
       {
         my $home = File::HomeDir->my_home;
@@ -220,7 +232,7 @@ sub create_cluster_ok
     }
     else
     {
-      $app_name = $_[$i];
+      $app_name = $item;
     }
     
     my $app = eval qq{ use $app_name; $app_name->new(\$config) };
