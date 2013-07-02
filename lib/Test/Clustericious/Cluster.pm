@@ -15,10 +15,24 @@ Test::Clustericious::Cluster - test an imaginary beowulf cluster of clustericiou
 
 =head1 SYNOPSIS
 
- use Test::Clustericious::Config;
  use Test::Clustericious::Cluster;
 
- create_cluster_ok;
+ my $cluster = Test::Clustericious::Cluster->new;
+ $cluster->create_cluster_ok('MyApp1', 'MyApp2');
+
+ my @urls = @{ $cluster->urls };
+ my $t = $cluster->t; # an instance of Test::Mojo
+ 
+ $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
+ $t->get_ok("$url[1]/another_path");    # tests against MyApp2
+ 
+
+=head1 DESCRIPTION
+
+This module allows you to test an entire cluster of Clustericious services
+(or just one or two).  The only prerequsisites are L<Mojolicious> and 
+L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
+apps and test how they interact.
 
 =cut
 
@@ -29,6 +43,9 @@ BEGIN { $ENV{MOJO_LOG_LEVEL} = 'fatal' }
 =head1 CONSTRUCTOR
 
 =head2 Test::Clustericious::Cluster->new
+
+Optionally takes an instace of Test::Mojo as its argument.
+If not provided, then a new one will be created.
 
 =cut
 
@@ -131,8 +148,18 @@ sub create_cluster_ok
       silent => 1,
     );
     
-    my $app_name = $_[$i];
-    my $app = eval qq{ use $app_name; $app_name->new };
+    my $app_name;
+    my $config = {};
+    if(ref $_[$i] eq 'ARRAY')
+    {
+      ($app_name, $config) = @{ $_[$i] };
+    }
+    else
+    {
+      $app_name = $_[$i];
+    }
+    
+    my $app = eval qq{ use $app_name; $app_name->new(\$config) };
     if(my $error = $@)
     {
       push @errors, [ $app_name, $error ];
