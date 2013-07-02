@@ -34,7 +34,7 @@ die $@ if $@;
 my $loader = Mojo::Loader->new;
 $loader->load('main');
 
-create_config_ok common => $loader->data('main', 'common.conf');
+create_config_ok 'common';
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(qw( MyApp MyApp ));
@@ -61,11 +61,11 @@ $t->get_ok($cluster->urls->[1] . "/number")
 
 __DATA__
 
-@@ common.conf
+@@ etc/common.conf
 ---
 url: <%= cluster->url %>
 
-@@ MyApp.conf
+@@ etc/MyApp.conf
 ---
 % extends_config 'common';
 service_index: <%= cluster->index %>

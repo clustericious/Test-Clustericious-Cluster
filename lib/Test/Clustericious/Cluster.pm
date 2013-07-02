@@ -198,14 +198,15 @@ sub create_cluster_ok
     my $app_name;
     my $config = {};
     my $item = $_[$i];
-    if(ref($item) eq '' && $loader->data($caller, "$item.conf"))
+    if(ref($item) eq '' && $loader->data($caller, "etc/$item.conf"))
     {
-      $item = [ $item, $loader->data($caller, "$item.conf") ];
+      $item = [ $item, $loader->data($caller, "etc/$item.conf") ];
     }
 
     if(ref $item eq 'ARRAY')
     {
-      ($app_name, $config) = @{ $item };
+      my $cb;
+      ($app_name, $config, $cb) = @{ $item };
       unless(ref $config)
       {
         my $home = File::HomeDir->my_home;
@@ -229,6 +230,7 @@ sub create_cluster_ok
             unless grep { $_ eq 'cluster' } @Clustericious::Config::Plugin::EXPORT;
         }
       }
+      $cb->() if defined $cb;
     }
     else
     {
