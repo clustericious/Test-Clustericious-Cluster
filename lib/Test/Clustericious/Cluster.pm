@@ -185,6 +185,14 @@ sub create_cluster_ok
   my $loader = Mojo::Loader->new;
   my $caller = caller;
   $loader->load($caller);
+
+  push @INC, sub {
+    my($self, $file) = @_;
+    my $data = $loader->data($caller, "lib/$file");
+    return unless defined $data;
+    open my $fh, '<', \$data;
+    return $fh;
+  };
   
   foreach my $i (0..$#_)
   {

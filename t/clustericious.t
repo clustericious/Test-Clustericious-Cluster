@@ -9,28 +9,6 @@ BEGIN {
 }
 plan tests => 15;
 
-eval q{
-  package
-    MyApp;
-    
-  $INC{'MyApp.pm'} = __FILE__;
-  
-  our $VERSON = '1.00';
-  use Mojo::Base qw( Clustericious::App );
-  
-  package
-    MyApp::Routes;
-  
-  use Clustericious::RouteBuilder;
-  
-  get '/' => sub { shift->render(text => 'welcome') };
-  get '/number' => sub {
-    my $c = shift;
-    $c->render(text => $c->config->service_index);
-  };
-};
-die $@ if $@;
-
 my $loader = Mojo::Loader->new;
 $loader->load('main');
 
@@ -69,3 +47,26 @@ url: <%= cluster->url %>
 ---
 % extends_config 'common';
 service_index: <%= cluster->index %>
+
+@@ lib/MyApp.pm
+package MyApp;
+
+use strict;
+use warnings;
+use Mojo::Base qw( Clustericious::App );
+use MyApp::Routes;
+
+our $VERSON = '1.00';
+
+@@ lib/MyApp/Routes.pm
+package MyApp::Routes;
+
+use strict;
+use warnings;
+use Clustericious::RouteBuilder;
+  
+get '/' => sub { shift->render(text => 'welcome') };
+get '/number' => sub {
+  my $c = shift;
+  $c->render(text => $c->config->service_index);
+};
