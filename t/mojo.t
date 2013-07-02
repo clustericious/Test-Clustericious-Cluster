@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 use v5.10;
-use Test::More tests => 7;
 use Test::Clustericious::Cluster;
+use Test::More tests => 7;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(

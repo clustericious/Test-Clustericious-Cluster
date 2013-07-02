@@ -3,7 +3,15 @@ package Test::Clustericious::Cluster;
 use strict;
 use warnings;
 use v5.10;
-use File::HomeDir::Test;
+
+BEGIN {
+  unless($INC{'File/HomeDir/Test.pm'})
+  {
+    eval q{ use File::HomeDir::Test };
+    die $@ if $@;
+  }
+}
+
 use File::HomeDir;
 use Mojo::URL;
 use Test::Mojo;
@@ -33,6 +41,11 @@ This module allows you to test an entire cluster of Clustericious services
 (or just one or two).  The only prerequsisites are L<Mojolicious> and 
 L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
 apps and test how they interact.
+
+If you are testing against Clustericious applications, it is important to
+either use this module as early as possible, or use L<File::HomeDir::Test>
+as the very first module in your test, as testing Clustericious configurations
+depend on the testing home directory being setup by L<File::HomeDir::Test>.
 
 =cut
 
@@ -122,7 +135,36 @@ sub url { shift->{url} }
 
 =head1 METHODS
 
-=head2 create_cluster_ok 
+=head2 create_cluster_ok @services
+
+Adds the given services to the test cluster.
+Each element in the services array may be either
+
+=over 4
+
+=item string
+
+The string is taken to be the L<Mojolicious> or L<Clustericious>
+application name.  No configuration is created or passed into
+the App.
+
+=item list reference in the form: [ string, hashref ]
+
+The string is taken to be the L<Mojolicious> application name.
+The hashref is the configuration passed into the constructor
+of the app.  This form should NOT be used for L<Clustericious>
+apps (see the third form).
+
+=item list reference in the form: [ string, string ]
+
+The first string is taken to be the L<Clustericious> application
+name.  The second string is the configuration in either YAML
+or JSON format (may include L<Mojo::Template> templating in it,
+see L<Clustericious::Config> for details).  This form requires
+that you have L<Clustericous> installed, and of course should
+not be used for non-L<Clustericious> L<Mojolicious> applications.
+
+=back
 
 =cut
 
@@ -140,6 +182,8 @@ sub create_cluster_ok
   
   my @errors;
   
+  my $has_clustericious_config = 0;
+  
   foreach my $i (0..$#_)
   {
     $self->{url} = shift @urls;
@@ -153,6 +197,29 @@ sub create_cluster_ok
     if(ref $_[$i] eq 'ARRAY')
     {
       ($app_name, $config) = @{ $_[$i] };
+      unless(ref $config)
+      {
+        my $home = File::HomeDir->my_home;
+        mkdir "$home/etc" unless -d "$home/etc";
+        open my $fh, '>', "$home/etc/$app_name.conf";
+        print $fh $config;
+        close $fh;
+        $config = {};
+        
+        unless($has_clustericious_config)
+        {
+          $has_clustericious_config = 1;
+          my $helper = sub { return $self };
+        
+          require Clustericious::Config::Plugin;
+          do {
+            no warnings 'redefine';
+            *Clustericious::Config::Plugin::cluster = $helper;
+          };
+          push @Clustericious::Config::Plugin::EXPORT, 'cluster'
+            unless grep { $_ eq 'cluster' } @Clustericious::Config::Plugin::EXPORT;
+        }
+      }
     }
     else
     {
