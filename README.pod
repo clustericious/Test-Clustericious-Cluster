@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Test::Clustericious::Cluster - Test an imaginary beowulf cluster of clustericious services
+Test::Clustericious::Cluster - Test an imaginary beowulf cluster of Clustericious services
 
 =head1 VERSION
 
@@ -24,7 +24,7 @@ version 0.01
 =head1 DESCRIPTION
 
 This module allows you to test an entire cluster of Clustericious services
-(or just one or two).  The only prerequsisites are L<Mojolicious> and 
+(or just one or two).  The only prerequisites are L<Mojolicious> and 
 L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
 apps and test how they interact.
 
@@ -37,7 +37,7 @@ depend on the testing home directory being setup by L<File::HomeDir::Test>.
 
 =head2 Test::Clustericious::Cluster->new( [ $t ] )
 
-Optionally takes an instace of Test::Mojo as its argument.
+Optionally takes an instance of Test::Mojo as its argument.
 If not provided, then a new one will be created.
 
 =head1 ATTRIBUTES

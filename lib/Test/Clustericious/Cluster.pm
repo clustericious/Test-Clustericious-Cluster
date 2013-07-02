@@ -17,7 +17,7 @@ use Mojo::URL;
 use Test::Mojo;
 use base qw( Test::Builder::Module );
 
-# ABSTRACT: Test an imaginary beowulf cluster of clustericious services
+# ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
 # VERSION
 
 =head1 SYNOPSIS
@@ -37,7 +37,7 @@ use base qw( Test::Builder::Module );
 =head1 DESCRIPTION
 
 This module allows you to test an entire cluster of Clustericious services
-(or just one or two).  The only prerequsisites are L<Mojolicious> and 
+(or just one or two).  The only prerequisites are L<Mojolicious> and 
 L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
 apps and test how they interact.
 
@@ -48,15 +48,13 @@ depend on the testing home directory being setup by L<File::HomeDir::Test>.
 
 =cut
 
-our $VERSION = '0.9927';
-
 BEGIN { $ENV{MOJO_LOG_LEVEL} = 'fatal' }
 
 =head1 CONSTRUCTOR
 
 =head2 Test::Clustericious::Cluster->new( [ $t ] )
 
-Optionally takes an instace of Test::Mojo as its argument.
+Optionally takes an instance of Test::Mojo as its argument.
 If not provided, then a new one will be created.
 
 =cut
