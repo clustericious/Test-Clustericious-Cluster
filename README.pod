@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Test::Clustericious::Cluster
+Test::Clustericious::Cluster - Test an imaginary beowulf cluster of clustericious services
 
 =head1 VERSION
 
@@ -32,10 +32,6 @@ If you are testing against Clustericious applications, it is important to
 either use this module as early as possible, or use L<File::HomeDir::Test>
 as the very first module in your test, as testing Clustericious configurations
 depend on the testing home directory being setup by L<File::HomeDir::Test>.
-
-=head1 NAME
-
-Test::Clustericious::Cluster - test an imaginary beowulf cluster of clustericious services
 
 =head1 CONSTRUCTOR
 

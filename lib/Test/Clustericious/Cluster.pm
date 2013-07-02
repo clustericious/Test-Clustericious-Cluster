@@ -17,9 +17,8 @@ use Mojo::URL;
 use Test::Mojo;
 use base qw( Test::Builder::Module );
 
-=head1 NAME
-
-Test::Clustericious::Cluster - test an imaginary beowulf cluster of clustericious services
+# ABSTRACT: Test an imaginary beowulf cluster of clustericious services
+# VERSION
 
 =head1 SYNOPSIS
 
