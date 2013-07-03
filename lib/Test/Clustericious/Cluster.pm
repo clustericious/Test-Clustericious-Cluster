@@ -295,7 +295,28 @@ sub create_cluster_ok
       $app_name = $item;
     }
     
-    my $app = eval qq{ use $app_name; $app_name->new(\$config) };
+    my $app;
+    
+    if(my $script = $loader->data($caller, "script/$app_name"))
+    {
+      state $index = 0;
+      my $home = File::HomeDir->my_home;
+      $app = eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . sprintf(q{
+        mkdir "$home/script" unless -d "$home/script";
+        open my $fh, '>', "$home/script/$app_name";
+        print $fh $script;
+        close $fh;
+        package
+          Test::Clustericious::Cluster::LiteApp%s;
+        my $app = do "$home/script/$app_name";
+        if(!$app && (my $e = $@ || $!)) { die $e }
+        $app;
+      }, $index++);
+    }
+    else
+    {
+      $app = eval qq{ use $app_name; $app_name->new(\$config) };
+    }
     if(my $error = $@)
     {
       push @errors, [ $app_name, $error ];
