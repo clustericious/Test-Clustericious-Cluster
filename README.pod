@@ -66,9 +66,13 @@ L<Clustericious::Config> configuration.
 The url of the current app (used from within a
 L<Clustericious::Config> configuration.
 
+=head2 auth_url
+
+The URL for the PlugAuth::Lite service, if one has been started.
+
 =head1 METHODS
 
-=head2 $cluster-E<gt>create_cluster_ok @services
+=head2 $cluster-E<gt>create_cluster_ok( @services )
 
 Adds the given services to the test cluster.
 Each element in the services array may be either
@@ -98,6 +102,15 @@ that you have L<Clustericous> installed, and of course should
 not be used for non-L<Clustericious> L<Mojolicious> applications.
 
 =back
+
+=head2 $cluster-E<gt>create_plugauth_lite_ok( %args )
+
+Add a L<PlugAuth::Lite> service to the test cluster.  The
+C<%args> are passed directly into the L<PlugAuth::Lite>
+constructor.
+
+You can retrieve the URL for the L<PlugAuth::Lite> service
+using the C<auth_url> attribute.
 
 =head1 AUTHOR
 
