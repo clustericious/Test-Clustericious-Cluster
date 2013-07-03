@@ -8,28 +8,61 @@ BEGIN {
   plan skip_all => 'test requires PlugAuth::Lite'
     unless eval q{ use PlugAuth::Lite; 1 };
 };
-plan tests => 1;
-
-eval q{
-  package
-    MyApp;
-  $INC{'MyApp.pm'} = __FILE__;
-  our $VERSION = '1.00';
-  use Mojo::Base qw( Clustericious::App );
-  
-  package
-    MyApp::Routes;
-    
-  use Clustericious::RouteBuilder;
-  
-  get '/' => sub { shift->render(text => 'public') };
-};
-die $@ if $@;
+plan tests => 9;
 
 my $cluster = Test::Clustericious::Cluster->new;
-$cluster->create_cluster_ok(
-  [ MyApp => <<CONFIG ]
+$cluster->create_plugauth_lite_ok;
+$cluster->create_cluster_ok(qw( MyApp ));
+
+my $url = $cluster->url->clone;
+my $t   = $cluster->t;
+
+$t->get_ok($url)
+  ->status_is(200)
+  ->content_is('public');
+
+$url->path("/private");
+
+$t->get_ok($url)
+  ->status_is(401);
+
+$url->userinfo('bad:bad');
+
+$t->get_ok($url)
+  ->status_is(401);
+
+__DATA__
+
+@@ etc/MyApp.conf
 ---
 url: <%= cluster->url %>
-CONFIG
-);
+plug_auth:
+  url: <%= cluster->auth_url %>
+
+@@ lib/MyApp.pm
+package MyApp;
+
+use strict;
+use warnings;
+use MyApp::Routes;
+use Mojo::Base qw( Clustericious::App );
+
+our $VERSION = '1.00';
+
+1;
+
+@@ lib/MyApp/Routes.pm
+package MyApp::Routes;
+
+use strict;
+use warnings;
+use Clustericious::RouteBuilder;
+
+get '/' => sub { shift->render(text => 'public') };
+  
+authenticate;
+authorize 'foo';
+  
+get '/private' => sub { shift->render(text => 'secret') };
+
+1;

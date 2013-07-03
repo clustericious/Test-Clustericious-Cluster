@@ -16,6 +16,7 @@ use File::HomeDir;
 use Mojo::URL;
 use Test::Mojo;
 use Mojo::Loader;
+use Mojo::UserAgent;
 use base qw( Test::Builder::Module );
 
 # ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
@@ -73,13 +74,14 @@ sub new
   my $builder = __PACKAGE__->builder;
   
   bless { 
-    t       => $t, 
-    builder => $builder, 
-    urls    => [], 
-    apps    => [], 
-    index   => -1,
-    url     => '', 
-    servers => [],
+    t        => $t, 
+    builder  => $builder, 
+    urls     => [], 
+    apps     => [], 
+    index    => -1,
+    url      => '', 
+    servers  => [],
+    auth_url => '',
   }, $class;
 }
 
@@ -130,6 +132,14 @@ L<Clustericious::Config> configuration.
 =cut
 
 sub url { shift->{url} }
+
+=head2 auth_url
+
+The URL for the PlugAuth::Lite service, if one has been started.
+
+=cut
+
+sub auth_url { shift->{auth_url} }
 
 =head1 METHODS
 
@@ -257,6 +267,11 @@ sub create_cluster_ok
       $server->app($app);
     }
     
+    if(eval { $app->isa('Clustericious::App') })
+    {
+      $app->helper(auth_ua => sub { $self->{auth_ua}; });
+    }
+    
     $server->listen([$self->url.'']);
     $server->start;
     push @{ $self->{servers} }, $server;
@@ -265,6 +280,62 @@ sub create_cluster_ok
   my $tb = __PACKAGE__->builder;
   $tb->ok(@errors == 0, "created cluster");
   $tb->diag("exception: " . $_->[0] . ': ' . $_->[1]) for @errors;
+  
+  return $self;
+}
+
+=head2 $cluster-E<gt>create_plugauth_lite_ok( %args )
+
+Add a L<PlugAuth::Lite> service to the test cluster.  The
+C<%args> are passed directly into the L<PlugAuth::Lite>
+constructor.
+
+You can retrieve the URL for the L<PlugAuth::Lite> service
+using the C<auth_url> attribute.
+
+=cut
+
+sub create_plugauth_lite_ok
+{
+  my($self, %args) = @_;
+  my $ok = 1;
+  my $tb = __PACKAGE__->builder;
+  
+  if($self->{auth_ua} || $self->{auth_url})
+  {
+    $ok = 0;
+    $tb->diag("only use create_plugauth_lite_ok once");
+  }
+  else
+  {
+    my $url = Mojo::URL->new("http://127.0.0.1");
+    my $ua = Mojo::UserAgent->new;
+    $url->port($ua->ioloop->generate_port);
+  
+    eval {
+      require PlugAuth::Lite;
+    
+      my $server = Mojo::Server::Daemon->new(
+        ioloop => $ua->ioloop,
+        silent => 1,
+      );
+    
+      $server->app(PlugAuth::Lite->new(\%args));
+      $server->listen([$url.'']);
+      $server->start;
+      push @{ $self->{servers} }, $server;
+    
+      $self->{auth_ua}  = $ua;
+      $self->{auth_url} = $url;
+    };
+    if(my $error = $@)
+    {
+      $tb->diag("error: $error");
+      $ok = 0;
+    }
+  }
+  
+  $tb->ok($ok, "PlugAuth::Lite instance on " . $self->{auth_url});
   
   return $self;
 }
