@@ -8,10 +8,12 @@ BEGIN {
   plan skip_all => 'test requires PlugAuth::Lite'
     unless eval q{ use PlugAuth::Lite; 1 };
 };
-plan tests => 9;
+plan tests => 12;
 
 my $cluster = Test::Clustericious::Cluster->new;
-$cluster->create_plugauth_lite_ok;
+
+$cluster->create_plugauth_lite_ok(auth => sub { $_[0] eq 'optimus' && $_[1] eq 'matrix' });
+
 $cluster->create_cluster_ok(qw( MyApp ));
 
 my $url = $cluster->url->clone;
@@ -30,6 +32,12 @@ $url->userinfo('bad:bad');
 
 $t->get_ok($url)
   ->status_is(401);
+
+$url->userinfo('optimus:matrix');
+
+$t->get_ok($url)
+  ->status_is(200)
+  ->content_is('secret');
 
 __DATA__
 

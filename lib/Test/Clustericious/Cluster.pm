@@ -82,6 +82,7 @@ sub new
     url      => '', 
     servers  => [],
     auth_url => '',
+    extra_ua => [$t->ua],
   }, $class;
 }
 
@@ -143,7 +144,7 @@ sub auth_url { shift->{auth_url} }
 
 =head1 METHODS
 
-=head2 $cluster-E<gt>create_cluster_ok @services
+=head2 $cluster-E<gt>create_cluster_ok( @services )
 
 Adds the given services to the test cluster.
 Each element in the services array may be either
@@ -175,6 +176,49 @@ not be used for non-L<Clustericious> L<Mojolicious> applications.
 =back
 
 =cut
+
+sub _add_app_to_ua
+{
+  use Carp qw( confess );
+  my($self, $ua, $url, $app) = @_;
+  #confess "usage: \$cluster->_add_app_to_ua($ua, $url, $app)" unless $url;
+  my $server = Mojo::Server::Daemon->new(
+    ioloop => $ua->ioloop,
+    silent => 1,
+  );
+  $server->app($app);
+  $server->listen(["$url"]);
+  $server->start;
+  push @{ $self->{servers} }, $server;
+  return;
+}
+
+sub _add_app
+{
+  my($self, $url, $app) = @_;
+  $self->_add_app_to_ua($_, $url, $app) for @{ $self->{extra_ua} };
+  return;
+}
+
+sub _add_ua
+{
+  my($self) = @_;
+  
+  my $max = $#{ $self->{apps} };
+  
+  my $ua = Mojo::UserAgent->new;
+  
+  $self->_add_app_to_ua($ua, $self->{auth_url}, $self->{auth_url})
+    if $self->{auth_url} && $self->{auth_url};
+  
+  for(my $i=0; $i<=$max; $i++)
+  {
+    next unless defined $self->{apps}->[$i];
+    $self->_add_app_to_ua($ua, $self->{urls}->[$i], $self->{apps}->[$i]);
+  }
+  push @{ $self->{extra_ua} }, $ua;
+  return $ua;
+}
 
 sub create_cluster_ok
 {
@@ -208,12 +252,9 @@ sub create_cluster_ok
   {
     $self->{index}++;
     $self->{url} = shift @urls;
-    my $server = Mojo::Server::Daemon->new(
-      ioloop => $self->t->ua->ioloop,
-      silent => 1,
-    );
     
     my $app_name;
+    my $cb;
     my $config = {};
     my $item = $_[$i];
     if(ref($item) eq '' && $loader->data($caller, "etc/$item.conf"))
@@ -223,7 +264,6 @@ sub create_cluster_ok
 
     if(ref $item eq 'ARRAY')
     {
-      my $cb;
       ($app_name, $config, $cb) = @{ $item };
       unless(ref $config)
       {
@@ -242,13 +282,13 @@ sub create_cluster_ok
           require Clustericious::Config::Plugin;
           do {
             no warnings 'redefine';
+            no warnings 'once';
             *Clustericious::Config::Plugin::cluster = $helper;
           };
           push @Clustericious::Config::Plugin::EXPORT, 'cluster'
             unless grep { $_ eq 'cluster' } @Clustericious::Config::Plugin::EXPORT;
         }
       }
-      $cb->() if defined $cb;
     }
     else
     {
@@ -264,17 +304,19 @@ sub create_cluster_ok
     else
     {
       push @{ $self->apps }, $app;
-      $server->app($app);
+      $self->_add_app($self->url, $app);
     }
     
     if(eval { $app->isa('Clustericious::App') })
     {
-      $app->helper(auth_ua => sub { $self->{auth_ua}; });
+      $app->helper(auth_ua => sub { 
+        die "no plug auth service configured for test cluster, either turn off authentication or use Test::Clustericious::Cluster#create_plugauth_lite_ok"
+          unless defined $self->{auth_ua};
+        $self->{auth_ua};
+      });
     }
-    
-    $server->listen([$self->url.'']);
-    $server->start;
-    push @{ $self->{servers} }, $server;
+
+    $cb->() if defined $cb;
   }
 
   my $tb = __PACKAGE__->builder;
@@ -308,25 +350,16 @@ sub create_plugauth_lite_ok
   }
   else
   {
+    my $ua = $self->{auth_ua} = $self->_add_ua;
     my $url = Mojo::URL->new("http://127.0.0.1");
-    my $ua = Mojo::UserAgent->new;
-    $url->port($ua->ioloop->generate_port);
+    $url->port($self->t->ua->ioloop->generate_port);
   
     eval {
       require PlugAuth::Lite;
-    
-      my $server = Mojo::Server::Daemon->new(
-        ioloop => $ua->ioloop,
-        silent => 1,
-      );
-    
-      $server->app(PlugAuth::Lite->new(\%args));
-      $server->listen([$url.'']);
-      $server->start;
-      push @{ $self->{servers} }, $server;
-    
-      $self->{auth_ua}  = $ua;
+      
+      my $app = $self->{auth_app} = PlugAuth::Lite->new(\%args);
       $self->{auth_url} = $url;
+      $self->_add_app($url, $app);
     };
     if(my $error = $@)
     {
