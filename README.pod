@@ -112,6 +112,18 @@ constructor.
 You can retrieve the URL for the L<PlugAuth::Lite> service
 using the C<auth_url> attribute.
 
+=head2 $cluster-E<gt>stop_ok( $index, [ $test_name ])
+
+Stop the given service.  The service is specified by 
+an index, the first application when you created the
+cluster is 0, the second is 1, and so on.
+
+=head2 $cluster-E<gt>start_ok( $index, [ $test_name ] )
+
+Start the given service.  The service is specified by 
+an index, the first application when you created the
+cluster is 0, the second is 1, and so on.
+
 =head1 AUTHOR
 
 Graham Ollis <plicease@cpan.org>

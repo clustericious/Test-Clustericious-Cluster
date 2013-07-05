@@ -402,6 +402,14 @@ sub create_plugauth_lite_ok
   return $self;
 }
 
+=head2 $cluster-E<gt>stop_ok( $index, [ $test_name ])
+
+Stop the given service.  The service is specified by 
+an index, the first application when you created the
+cluster is 0, the second is 1, and so on.
+
+=cut
+
 sub stop_ok
 {
   my($self, $index, $test_name) = @_;
@@ -425,6 +433,14 @@ sub stop_ok
   
   $tb->ok($ok, $test_name);
 }
+
+=head2 $cluster-E<gt>start_ok( $index, [ $test_name ] )
+
+Start the given service.  The service is specified by 
+an index, the first application when you created the
+cluster is 0, the second is 1, and so on.
+
+=cut
 
 sub start_ok
 {
