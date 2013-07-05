@@ -74,15 +74,16 @@ sub new
   my $builder = __PACKAGE__->builder;
   
   bless { 
-    t        => $t, 
-    builder  => $builder, 
-    urls     => [], 
-    apps     => [], 
-    index    => -1,
-    url      => '', 
-    servers  => [],
-    auth_url => '',
-    extra_ua => [$t->ua],
+    t           => $t, 
+    builder     => $builder, 
+    urls        => [], 
+    apps        => [], 
+    index       => -1,
+    url         => '', 
+    servers     => [],
+    app_servers => [],
+    auth_url    => '',
+    extra_ua    => [$t->ua],
   }, $class;
 }
 
@@ -180,7 +181,7 @@ not be used for non-L<Clustericious> L<Mojolicious> applications.
 sub _add_app_to_ua
 {
   use Carp qw( confess );
-  my($self, $ua, $url, $app) = @_;
+  my($self, $ua, $url, $app, $index) = @_;
   #confess "usage: \$cluster->_add_app_to_ua($ua, $url, $app)" unless $url;
   my $server = Mojo::Server::Daemon->new(
     ioloop => $ua->ioloop,
@@ -189,14 +190,21 @@ sub _add_app_to_ua
   $server->app($app);
   $server->listen(["$url"]);
   $server->start;
-  push @{ $self->{servers} }, $server;
+  if(defined $index)
+  {
+    push @{ $self->{app_servers}->[$index] }, $server;
+  }
+  else
+  {
+    push @{ $self->{servers} }, $server;
+  }
   return;
 }
 
 sub _add_app
 {
-  my($self, $url, $app) = @_;
-  $self->_add_app_to_ua($_, $url, $app) for @{ $self->{extra_ua} };
+  my($self, $url, $app, $index) = @_;
+  $self->_add_app_to_ua($_, $url, $app, $index) for @{ $self->{extra_ua} };
   return;
 }
 
@@ -214,7 +222,7 @@ sub _add_ua
   for(my $i=0; $i<=$max; $i++)
   {
     next unless defined $self->{apps}->[$i];
-    $self->_add_app_to_ua($ua, $self->{urls}->[$i], $self->{apps}->[$i]);
+    $self->_add_app_to_ua($ua, $self->{urls}->[$i], $self->{apps}->[$i], $i);
   }
   push @{ $self->{extra_ua} }, $ua;
   return $ua;
@@ -325,7 +333,7 @@ sub create_cluster_ok
     else
     {
       push @{ $self->apps }, $app;
-      $self->_add_app($self->url, $app);
+      $self->_add_app($self->url, $app, $#{ $self->apps });
     }
     
     if(eval { $app->isa('Clustericious::App') })
@@ -392,6 +400,61 @@ sub create_plugauth_lite_ok
   $tb->ok($ok, "PlugAuth::Lite instance on " . $self->{auth_url});
   
   return $self;
+}
+
+sub stop_ok
+{
+  my($self, $index, $test_name) = @_;
+  my $ok = 1;
+  my $tb = __PACKAGE__->builder;
+  
+  my $app = $self->apps->[$index];
+  if(defined $app)
+  {
+    my $app_name = ref $app;
+    $test_name //= "stop service $app_name ($index)";
+    @{ $self->{app_servers}->[$index] } = ();
+  }
+  else
+  {
+    $tb->diag("no such app for index: $index");
+    $ok = 0;
+  }
+  
+  $test_name //= "stop service ($index)";
+  
+  $tb->ok($ok, $test_name);
+}
+
+sub start_ok
+{
+  my($self, $index, $test_name) = @_;
+  my $ok = 1;
+  my $tb = __PACKAGE__->builder;
+  
+  my $app = $self->apps->[$index];
+  if(defined $app)
+  {
+    my $app_name = ref $app;
+    $test_name //= "start service $app_name ($index)";
+    eval {
+      $self->_add_app($self->urls->[$index], $app, $index);
+    };
+    if(my $error = $@)
+    {
+      $tb->diag("error in start: $error");
+      $ok = 0;
+    }
+  }
+  else
+  {
+    $tb->diag("no such app for index: $index");
+    $ok = 0;
+  }
+  
+  $test_name //= "start service ($index)";
+  
+  $tb->ok($ok, $test_name);
 }
 
 1;
