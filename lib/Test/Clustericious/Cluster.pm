@@ -323,7 +323,17 @@ sub create_cluster_ok
     }
     else
     {
-      $app = eval qq{ use $app_name; $app_name->new(\$config) };
+      $app = eval qq{
+        use $app_name;
+        if($app_name->isa('Clustericious::App'))
+        {
+          eval { # if they have Clustericious::Log 0.11 or better
+            require Test::Clustericious::Log;
+            Test::Clustericious::Log->import;
+          };
+        }
+        $app_name->new(\$config);
+      };
     }
     if(my $error = $@)
     {
