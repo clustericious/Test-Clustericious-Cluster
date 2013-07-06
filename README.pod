@@ -6,7 +6,7 @@ Test::Clustericious::Cluster - Test an imaginary beowulf cluster of Clustericiou
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -123,6 +123,11 @@ cluster is 0, the second is 1, and so on.
 Start the given service.  The service is specified by 
 an index, the first application when you created the
 cluster is 0, the second is 1, and so on.
+
+=head2 $cluster-E<gt>create_ua
+
+Create a new instance of Mojo::UserAgent which can be used
+to connect to nodes in the test cluster.
 
 =head1 AUTHOR
 

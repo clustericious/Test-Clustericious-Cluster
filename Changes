@@ -2,7 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.03      2013-07-05 22:27:24 America/New_York
+  - add create_ua method
+
 0.02      2013-07-05 17:07:42 America/New_York
+  - add start_ok and stop_ok methods
 
 0.01      2013-07-03 15:50:30 America/New_York
   - initial version
