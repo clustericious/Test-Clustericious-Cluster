@@ -483,4 +483,16 @@ sub start_ok
   $tb->ok($ok, $test_name);
 }
 
+=head2 $cluster-E<gt>create_ua
+
+Create a new instance of Mojo::UserAgent which can be used
+to connect to nodes in the test cluster.
+
+=cut
+
+sub create_ua
+{
+  shift->_add_ua;
+}
+
 1;
