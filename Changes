@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - patch %INC to make Mojo::Home happy
 
 0.03      2013-07-05 22:27:24 America/New_York
   - add create_ua method

@@ -253,6 +253,14 @@ sub create_cluster_ok
     my $data = $loader->data($caller, "lib/$file");
     return unless defined $data;
     open my $fh, '<', \$data;
+    
+    # fake out %INC because Mojo::Home freeks the heck
+    # out when it sees a CODEREF on some platforms
+    # in %INC
+    my $home = File::HomeDir->my_home;
+    mkdir "$home/mojohome" unless -d "$home/mojohome";
+    $INC{$file} = "$home/mojohome/$file";
+    
     return $fh;
   };
   
