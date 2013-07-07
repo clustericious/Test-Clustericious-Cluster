@@ -409,7 +409,7 @@ sub create_plugauth_lite_ok
   my $ok = 1;
   my $tb = __PACKAGE__->builder;
   
-  if(eval q{ use Clustericious; 1 } && ! eval q{ use Clustericious 0.9925 })
+  if(eval q{ use Clustericious; 1 } && ! eval q{ use Clustericious 0.9925; 1 })
   {
     croak "creat_plugin_lite_ok requires Clustericious 0.9925 or better (see Test::Clustericious::Test for details)";
   }
