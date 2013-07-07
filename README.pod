@@ -6,7 +6,7 @@ Test::Clustericious::Cluster - Test an imaginary beowulf cluster of Clustericiou
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -111,6 +111,24 @@ constructor.
 
 You can retrieve the URL for the L<PlugAuth::Lite> service
 using the C<auth_url> attribute.
+
+This feature requires L<PlugAuth::Lite> and L<Clustericious> 
+0.9925 or better, though neither are a prerequisite of this
+module.  If you are using this method you need to either require
+L<PlugAuth::Lite> and L<Clustericious> 0.9925 or better, or skip 
+your test in the event that the user has an earlier version. 
+For example:
+
+ use strict;
+ use warnings;
+ use Test::Clustericious::Cluster;
+ use Test::More;
+ BEGIN {
+   plan skip_all => 'test requires Clustericious 0.9925'
+     unless eval q{ use Clustericious 0.9925; 1 };
+   plan skip_all => 'test requires PlugAuth::Lite'
+     unless eval q{ use PlugAuth::Lite; 1 };
+ };
 
 =head2 $cluster-E<gt>stop_ok( $index, [ $test_name ])
 

@@ -1,7 +1,14 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.04      2013-07-07 00:39:12 America/New_York
   - patch %INC to make Mojo::Home happy
+  - create_plugauth_lite_ok requires Clustericious 0.9925
+    this was always true, but this version:
+  - document dep on Clustericious 0.9925
+  - croak if you try to use create_plugauth_lite_ok with
+    an earlier version
 
 0.03      2013-07-05 22:27:24 America/New_York
   - add create_ua method
