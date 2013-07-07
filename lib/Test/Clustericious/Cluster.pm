@@ -18,6 +18,7 @@ use Test::Mojo;
 use Mojo::Loader;
 use Mojo::UserAgent;
 use base qw( Test::Builder::Module );
+use Carp qw( croak );
 
 # ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
 # VERSION
@@ -382,6 +383,24 @@ constructor.
 You can retrieve the URL for the L<PlugAuth::Lite> service
 using the C<auth_url> attribute.
 
+This feature requires L<PlugAuth::Lite> and L<Clustericious> 
+0.9925 or better, though neither are a prerequisite of this
+module.  If you are using this method you need to either require
+L<PlugAuth::Lite> and L<Clustericious> 0.9925 or better, or skip 
+your test in the event that the user has an earlier version. 
+For example:
+
+ use strict;
+ use warnings;
+ use Test::Clustericious::Cluster;
+ use Test::More;
+ BEGIN {
+   plan skip_all => 'test requires Clustericious 0.9925'
+     unless eval q{ use Clustericious 0.9925; 1 };
+   plan skip_all => 'test requires PlugAuth::Lite'
+     unless eval q{ use PlugAuth::Lite; 1 };
+ };
+
 =cut
 
 sub create_plugauth_lite_ok
@@ -389,6 +408,11 @@ sub create_plugauth_lite_ok
   my($self, %args) = @_;
   my $ok = 1;
   my $tb = __PACKAGE__->builder;
+  
+  if(eval q{ use Clustericious; 1 } && ! eval q{ use Clustericious 0.9925 })
+  {
+    croak "creat_plugin_lite_ok requires Clustericious 0.9925 or better (see Test::Clustericious::Test for details)";
+  }
   
   if($self->{auth_ua} || $self->{auth_url})
   {

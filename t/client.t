@@ -1,11 +1,12 @@
 use strict;
 use warnings;
+eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
   plan skip_all => 'test requires Clustericious::Client'
     unless eval q{ use Clustericious::Client; 1};
-  plan skip_all => 'test requires Test::Clustericious::Config; 1'
+  plan skip_all => 'test requires Test::Clustericious::Config 0.22'
     unless eval q{ use Test::Clustericious::Config; 1 };
 }
 

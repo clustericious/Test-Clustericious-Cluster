@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
