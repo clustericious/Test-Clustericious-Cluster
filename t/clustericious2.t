@@ -8,63 +8,71 @@ BEGIN {
   plan skip_all => 'test requires Clustericious::Config' unless eval q{ use Clustericious::Config; 1 };
   plan skip_all => 'test requires Test::Clustericious::Config 0.22' unless eval q{ use Test::Clustericious::Config; 1 };
 }
-plan tests => 15;
-
-create_config_ok 'common';
+plan tests => 7;
 
 my $cluster = Test::Clustericious::Cluster->new;
-$cluster->create_cluster_ok(qw( MyApp MyApp ));
+$cluster->create_cluster_ok(qw( MyApp1 MyApp2 ));
 
 my $t = $cluster->t;
 
 $t->get_ok($cluster->urls->[0])
   ->status_is(200)
-  ->content_is('welcome');
+  ->content_is('myapp1');
 
 $t->get_ok($cluster->urls->[1])
   ->status_is(200)
-  ->content_is('welcome');
-
-is(Clustericious::Config->new('MyApp')->url, $cluster->urls->[1], "config matches last MyApp url");
-
-$t->get_ok($cluster->urls->[0] . "/number")
-  ->status_is(200)
-  ->content_is(0);
-
-$t->get_ok($cluster->urls->[1] . "/number")
-  ->status_is(200)
-  ->content_is(1);
+  ->content_is('myapp2');
 
 __DATA__
 
-@@ etc/common.conf
+@@ etc/MyApp1.conf
 ---
 url: <%= cluster->url %>
 
-@@ etc/MyApp.conf
+@@ etc/MyApp2.conf
 ---
-% extends_config 'common';
-service_index: <%= cluster->index %>
+url: <%= cluster->url %>
 
-@@ lib/MyApp.pm
-package MyApp;
+@@ lib/MyApp1.pm
+package MyApp1;
 
 use strict;
 use warnings;
 use Mojo::Base qw( Clustericious::App );
-use MyApp::Routes;
-
+use MyApp1::Routes;
 our $VERSON = '1.00';
 
-@@ lib/MyApp/Routes.pm
-package MyApp::Routes;
+1;
+
+@@ lib/MyApp1/Routes.pm
+package MyApp1::Routes;
 
 use strict;
 use warnings;
 use Clustericious::RouteBuilder;
-  
-get '/' => sub { shift->render(text => 'welcome') };
-get '/number' => sub {
-  my $c = shift;
-  $c->render(text => $c->config->service_index);
-};
+
+get '/' => sub { shift->render(text => 'myapp1') };
+
+1;
+
+@@ lib/MyApp2.pm
+package MyApp2;
+
+use strict;
+use warnings;
+use Mojo::Base qw( Clustericious::App );
+use MyApp2::Routes;
+our $VERSON = '1.00';
+
+1;
+
+@@ lib/MyApp2/Routes.pm
+package MyApp2::Routes;
+
+use strict;
+use warnings;
+use Clustericious::RouteBuilder;
+
+get '/' => sub { shift->render(text => 'myapp2') };
+
+1;
