@@ -19,11 +19,13 @@ $t->get_ok($cluster->urls->[1])
   ->status_is(200)
   ->content_is('Bar');
 
-package
-  Foo;
+__DATA__
 
-BEGIN { $INC{'Foo.pm'} = __FILE__ }
+@@ lib/Foo.pm
+package Foo;
 
+use strict;
+use warnings;
 use Mojo::Base qw( Mojolicious );
 
 sub startup
@@ -34,11 +36,13 @@ sub startup
   });
 }
 
-package
-  Bar;
+1;
 
-BEGIN { $INC{'Bar.pm'} = __FILE__ }
+@@ lib/Bar.pm
+package Bar;
 
+use strict;
+use warnings;
 use Mojo::Base qw( Mojolicious );
 
 sub startup
@@ -49,3 +53,4 @@ sub startup
   });
 }
 
+1;

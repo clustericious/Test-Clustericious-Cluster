@@ -21,12 +21,12 @@ $t->get_ok("$url/bar")
   ->status_is(200)
   ->content_is('two');
 
-package
-  Foo;
+__DATA__
+
+@@ lib/Foo.pm
+package Foo;
 
 use Mojo::Base qw( Mojolicious );
-
-BEGIN { $INC{"Foo.pm"} = __FILE__ }
 
 sub startup
 {
@@ -35,3 +35,5 @@ sub startup
   $self->routes->get('/foo' => sub { shift->render(text => $config->{arg1}) });
   $self->routes->get('/bar' => sub { shift->render(text => $config->{arg2}) });
 }
+
+1;
