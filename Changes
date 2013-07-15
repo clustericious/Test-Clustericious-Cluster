@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.05      2013-07-14 22:33:34 America/New_York
   - support for non-inlined lite apps
+  - deprecate passing Test::Mojo instance into new
 
 0.04      2013-07-07 00:39:12 America/New_York
   - patch %INC to make Mojo::Home happy
