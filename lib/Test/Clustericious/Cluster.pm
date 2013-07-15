@@ -78,8 +78,14 @@ can be useful for getting the URL for the your and other service URLs.
  other_urls: <%= json [ @{ cluster->urls } ] %>
 
 You can also put perl code in the data section of your test file, which
-can be useful if there isn't a another good place to put it.
+can be useful if there isn't a another good place to put it.  This
+example embeds as L<Mojolicious> app "FooApp" and a L<Clustericious::App>
+"BarApp" into the test script itself:
 
+ ...
+ $cluster->create_cluster_ok(qw( FooApp BarApp ));
+ ...
+ 
  __END__
  
  @@ lib/FooApp.pm
@@ -117,6 +123,11 @@ can be useful if there isn't a another good place to put it.
  get '/' => sub { shift->render(text => 'hello there from bar') };
  
  1;
+
+These examples are full apps, but you could also use this
+feature to implement mocks to test parts of your program
+that use resources that aren't typically available during
+a test.
 
 =cut
 
