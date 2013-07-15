@@ -65,6 +65,7 @@ If not provided, then a new one will be created.
 sub new
 {
   my $class = shift;
+  my $args = ref $_[0] ? { %{ $_[0] } } : {@_};
 
   my $t;
   if(defined $_[0] && ref $_[0] && eval { $_[0]->isa('Test::Mojo') })
@@ -73,6 +74,10 @@ sub new
   { $t = Test::Mojo->new }
   
   my $builder = __PACKAGE__->builder;
+  
+  $args->{lite_path} = [ $args->{lite_path} ]
+    if defined $args->{lite_path}
+    && ref($args->{lite_path}) ne 'ARRAY';
   
   bless { 
     t           => $t, 
@@ -85,6 +90,7 @@ sub new
     app_servers => [],
     auth_url    => '',
     extra_ua    => [$t->ua],
+    lite_path   => $args->{lite_path} // [],
   }, $class;
 }
 
@@ -181,8 +187,8 @@ not be used for non-L<Clustericious> L<Mojolicious> applications.
 
 sub _add_app_to_ua
 {
-  use Carp qw( confess );
   my($self, $ua, $url, $app, $index) = @_;
+  #use Carp qw( confess );
   #confess "usage: \$cluster->_add_app_to_ua($ua, $url, $app)" unless $url;
   my $server = Mojo::Server::Daemon->new(
     ioloop => $ua->ioloop,
@@ -227,6 +233,25 @@ sub _add_ua
   }
   push @{ $self->{extra_ua} }, $ua;
   return $ua;
+}
+
+sub _load_lite_app
+{
+  my($app_path, $script) = @_;
+  state $index = 0;
+  eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . sprintf(q{
+    if(defined $script)
+    {
+      open my $fh, '>', $app_path;
+      print $fh $script;
+      close $fh;
+    }
+    package
+      Test::Clustericious::Cluster::LiteApp%s;
+    my $app = do $app_path;
+    if(!$app && (my $e = $@ || $!)) { die $e }
+    $app;
+  }, $index++);
 }
 
 sub create_cluster_ok
@@ -314,23 +339,33 @@ sub create_cluster_ok
     
     my $app;
     
-    if(my $script = $loader->data($caller, "script/$app_name"))
+    unless(defined $app)
     {
-      state $index = 0;
-      my $home = File::HomeDir->my_home;
-      $app = eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . sprintf(q{
+      if(my $script = $loader->data($caller, "script/$app_name"))
+      {
+        my $home = File::HomeDir->my_home;
         mkdir "$home/script" unless -d "$home/script";
-        open my $fh, '>', "$home/script/$app_name";
-        print $fh $script;
-        close $fh;
-        package
-          Test::Clustericious::Cluster::LiteApp%s;
-        my $app = do "$home/script/$app_name";
-        if(!$app && (my $e = $@ || $!)) { die $e }
-        $app;
-      }, $index++);
+        $app = _load_lite_app("$home/script/$app_name", $script);
+        if(my $error = $@)
+        { push @errors, [ $app_name, $error ] }
+      }
     }
-    else
+    
+    unless(defined $app)
+    {
+      foreach my $dir (@{ $self->{lite_path} })
+      {
+        if(-x "$dir/$app_name")
+        {
+          $app = _load_lite_app("$dir/$app_name");
+          if(my $error = $@)
+          { push @errors, [ $app_name, $error ] }
+          last;
+        }
+      }
+    }
+    
+    unless(defined $app) 
     {
       $app = eval qq{
         use $app_name;
@@ -343,17 +378,13 @@ sub create_cluster_ok
         }
         $app_name->new(\$config);
       };
+      if(my $error = $@)
+      { push @errors, [ $app_name, $error ] }
     }
-    if(my $error = $@)
-    {
-      push @errors, [ $app_name, $error ];
-      push @{ $self->apps }, undef;
-    }
-    else
-    {
-      push @{ $self->apps }, $app;
-      $self->_add_app($self->url, $app, $#{ $self->apps });
-    }
+
+    push @{ $self->apps }, $app;
+    if(defined $app)
+    { $self->_add_app($self->url, $app, $#{ $self->apps }); }
     
     if(eval { $app->isa('Clustericious::App') })
     {
