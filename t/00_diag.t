@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+BEGIN { eval q{ use EV } } # avoid warning
 use Test::More tests => 1;
 
 my @mods = sort qw(

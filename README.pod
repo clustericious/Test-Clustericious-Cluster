@@ -25,8 +25,8 @@ version 0.04
 
 This module allows you to test an entire cluster of Clustericious services
 (or just one or two).  The only prerequisites are L<Mojolicious> and 
-L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
-apps and test how they interact.
+L<File::HomeDir>, so you can mix and match L<Mojolicious>, L<Mojolicious::Lite>
+and full L<Clustericious> apps and test how they interact.
 
 If you are testing against Clustericious applications, it is important to
 either use this module as early as possible, or use L<File::HomeDir::Test>
@@ -35,10 +35,19 @@ depend on the testing home directory being setup by L<File::HomeDir::Test>.
 
 =head1 CONSTRUCTOR
 
-=head2 Test::Clustericious::Cluster->new( [ $t ] )
+=head2 Test::Clustericious::Cluster->new( %args )
 
-Optionally takes an instance of Test::Mojo as its argument.
+Arguments:
+
+=head3 t
+
+The Test::Mojo object to use.
 If not provided, then a new one will be created.
+
+=head3 lite_path
+
+List reference of paths to search for L<Mojolicious::Lite>
+apps.
 
 =head1 ATTRIBUTES
 
@@ -82,8 +91,14 @@ Each element in the services array may be either
 =item string
 
 The string is taken to be the L<Mojolicious> or L<Clustericious>
-application name.  No configuration is created or passed into
+application class name.  No configuration is created or passed into
 the App.
+
+This can also be the name of a L<Mojolicious::Lite> application.
+The PATH environment variable will be used to search for the
+lite application.  The script for the lite app must be executable.
+You can specify additional directories to search using the
+C<lite_path> argument to the constructor.
 
 =item list reference in the form: [ string, hashref ]
 

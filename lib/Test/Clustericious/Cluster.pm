@@ -41,8 +41,8 @@ use Carp qw( croak );
 
 This module allows you to test an entire cluster of Clustericious services
 (or just one or two).  The only prerequisites are L<Mojolicious> and 
-L<File::HomeDir>, so you can mix and match Mojolicious and full Clustericious
-apps and test how they interact.
+L<File::HomeDir>, so you can mix and match L<Mojolicious>, L<Mojolicious::Lite>
+and full L<Clustericious> apps and test how they interact.
 
 If you are testing against Clustericious applications, it is important to
 either use this module as early as possible, or use L<File::HomeDir::Test>
@@ -55,23 +55,39 @@ BEGIN { $ENV{MOJO_LOG_LEVEL} = 'fatal' }
 
 =head1 CONSTRUCTOR
 
-=head2 Test::Clustericious::Cluster->new( [ $t ] )
+=head2 Test::Clustericious::Cluster->new( %args )
 
-Optionally takes an instance of Test::Mojo as its argument.
+Arguments:
+
+=head3 t
+
+The Test::Mojo object to use.
 If not provided, then a new one will be created.
+
+=head3 lite_path
+
+List reference of paths to search for L<Mojolicious::Lite>
+apps.
 
 =cut
 
 sub new
 {
   my $class = shift;
-  my $args = ref $_[0] ? { %{ $_[0] } } : {@_};
-
-  my $t;
-  if(defined $_[0] && ref $_[0] && eval { $_[0]->isa('Test::Mojo') })
-  { $t = shift }
+  
+  my $args;
+  if(eval { $_[0]->isa('Test::Mojo') })
+  {
+    # undocumented and deprecated
+    # you can pass in just an instance of Test::Mojo
+    $args = { t => $_[0] };
+  }
   else
-  { $t = Test::Mojo->new }
+  {
+    $args = ref $_[0] ? { %{ $_[0] } } : {@_};
+  }
+
+  my $t = $args->{t} // Test::Mojo->new;
   
   my $builder = __PACKAGE__->builder;
   
@@ -164,8 +180,14 @@ Each element in the services array may be either
 =item string
 
 The string is taken to be the L<Mojolicious> or L<Clustericious>
-application name.  No configuration is created or passed into
+application class name.  No configuration is created or passed into
 the App.
+
+This can also be the name of a L<Mojolicious::Lite> application.
+The PATH environment variable will be used to search for the
+lite application.  The script for the lite app must be executable.
+You can specify additional directories to search using the
+C<lite_path> argument to the constructor.
 
 =item list reference in the form: [ string, hashref ]
 
