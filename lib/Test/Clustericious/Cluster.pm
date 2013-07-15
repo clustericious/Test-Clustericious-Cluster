@@ -378,7 +378,7 @@ sub create_cluster_ok
   my $caller = caller;
   $loader->load($caller);
 
-  push @INC, sub {
+  unshift @INC, sub {
     my($self, $file) = @_;
     my $data = $loader->data($caller, "lib/$file");
     return unless defined $data;
