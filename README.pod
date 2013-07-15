@@ -23,7 +23,7 @@ version 0.05
  $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
  $t->get_ok("$url[1]/another_path");    # tests against MyApp2
  
- __END__
+ __DATA__
  
  @@ etc/MyApp1.conf
  ---
@@ -51,7 +51,7 @@ embed Perl code in the configuration.  You can access the L<Test::Clustericious:
 instance from within the configuration using the C<cluster> function, which
 can be useful for getting the URL for the your and other service URLs.
 
- __END__
+ __DATA__
  
  @@ etc/Foo.conf
  ---
@@ -68,10 +68,10 @@ example embeds as L<Mojolicious> app "FooApp" and a L<Clustericious::App>
 "BarApp" into the test script itself:
 
  ...
- $cluster->create_cluster_ok(qw( FooApp BarApp ));
+ $cluster->create_cluster_ok('FooApp', 'BarApp');
  ...
  
- __END__
+ __DATA__
  
  @@ lib/FooApp.pm
  package FooApp;
@@ -111,8 +111,35 @@ example embeds as L<Mojolicious> app "FooApp" and a L<Clustericious::App>
 
 These examples are full apps, but you could also use this
 feature to implement mocks to test parts of your program
-that use resources that aren't typically available during
-a test.
+that use resources that aren't easily available during
+unit testing, or may change from host to host.  Here is an
+example that mocks parts of L<Net::hostent>:
+
+ ...
+ $cluster->create_cluster_ok('AppThatUsesNethostent');
+ ...
+ 
+ __DATA__
+ 
+ @@ lib/Net/hostent.pm
+ package Net::hostent;
+ 
+ use strict;
+ use warnings;
+ use base qw( Exporter );
+ our @EXPORT = qw( gethost );
+ 
+ sub gethost
+ {
+   my $input_name = shift;
+   return unless $input_name =~ /^(foo|bar|baz|foo.example.com)$/;
+   bless {}, 'Net::hostent';
+ }
+ 
+ sub name { 'foo.example.com' }
+ sub aliases { qw( foo.example.com foo bar baz ) }
+ 
+ 1;
 
 =head1 CONSTRUCTOR
 
