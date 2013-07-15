@@ -75,9 +75,11 @@ sub new
   
   my $builder = __PACKAGE__->builder;
   
-  $args->{lite_path} = [ $args->{lite_path} ]
-    if defined $args->{lite_path}
-    && ref($args->{lite_path}) ne 'ARRAY';
+  my $sep = $^O eq 'MSWin32' ? ';' : ':';
+  my $lite_path = [ split $sep, $ENV{PATH} ];
+
+  $args->{lite_path} //= [];
+  unshift @$lite_path, ref($args->{lite_path}) ? @{ $args->{lite_path} } : ($args->{lite_path});
   
   bless { 
     t           => $t, 
@@ -90,7 +92,7 @@ sub new
     app_servers => [],
     auth_url    => '',
     extra_ua    => [$t->ua],
-    lite_path   => $args->{lite_path} // [],
+    lite_path   => $lite_path,
   }, $class;
 }
 
