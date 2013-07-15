@@ -115,9 +115,13 @@ that use resources that aren't easily available during
 unit testing, or may change from host to host.  Here is an
 example that mocks parts of L<Net::hostent>:
 
- ...
- $cluster->create_cluster_ok('AppThatUsesNethostent');
- ...
+ use strict;
+ use warnings;
+ use Test::Clustericious::Cluster;
+ use Test::More tests => 2;
+ 
+ use_ok('Net::hostent');
+ is gethost('bar')->name, 'foo.example.com', 'gethost(bar).name = foo.example.com';
  
  __DATA__
  

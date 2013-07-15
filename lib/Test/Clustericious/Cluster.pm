@@ -130,31 +130,7 @@ that use resources that aren't easily available during
 unit testing, or may change from host to host.  Here is an
 example that mocks parts of L<Net::hostent>:
 
- ...
- $cluster->create_cluster_ok('AppThatUsesNethostent');
- ...
- 
- __DATA__
- 
- @@ lib/Net/hostent.pm
- package Net::hostent;
- 
- use strict;
- use warnings;
- use base qw( Exporter );
- our @EXPORT = qw( gethost );
- 
- sub gethost
- {
-   my $input_name = shift;
-   return unless $input_name =~ /^(foo|bar|baz|foo.example.com)$/;
-   bless {}, 'Net::hostent';
- }
- 
- sub name { 'foo.example.com' }
- sub aliases { qw( foo.example.com foo bar baz ) }
- 
- 1;
+# EXAMPLE: t/mock2.t
 
 =cut
 
@@ -316,6 +292,37 @@ not be used for non-L<Clustericious> L<Mojolicious> applications.
 
 =cut
 
+our $inc_hook;
+
+BEGIN {
+  unshift @INC, sub {
+    my($self, $file) = @_;
+
+    $DB::single = 1;  
+    return $inc_hook->($self, $file) if $inc_hook;
+   
+    state $loader;
+    unless(defined $loader)
+    {
+      $loader = Mojo::Loader->new;
+      $loader->load('main');
+    }
+  
+    my $data = $loader->data('main', "lib/$file");
+    return unless defined $data;
+    open my $fh, '<', \$data;
+  
+    # fake out %INC because Mojo::Home freeks the heck
+    # out when it sees a CODEREF on some platforms
+    # in %INC
+    my $home = File::HomeDir->my_home;
+    mkdir "$home/mojohome" unless -d "$home/mojohome";
+    $INC{$file} = "$home/mojohome/$file";
+  
+    return $fh;
+  };
+};
+
 sub _add_app_to_ua
 {
   my($self, $ua, $url, $app, $index) = @_;
@@ -405,7 +412,7 @@ sub create_cluster_ok
   my $caller = caller;
   $loader->load($caller);
 
-  unshift @INC, sub {
+  local $inc_hook = sub {
     my($self, $file) = @_;
     my $data = $loader->data($caller, "lib/$file");
     return unless defined $data;
