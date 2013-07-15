@@ -76,7 +76,7 @@ sub new
   my $class = shift;
   
   my $args;
-  if(eval { $_[0]->isa('Test::Mojo') })
+  if(ref($_[0]) && eval { $_[0]->isa('Test::Mojo') })
   {
     # undocumented and deprecated
     # you can pass in just an instance of Test::Mojo
