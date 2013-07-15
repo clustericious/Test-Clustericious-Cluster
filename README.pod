@@ -11,15 +11,25 @@ version 0.05
 =head1 SYNOPSIS
 
  use Test::Clustericious::Cluster;
-
+ 
+ # suppose MyApp1 isa Clustericious::App and
+ # MyApp2 is a Mojolicious app
  my $cluster = Test::Clustericious::Cluster->new;
  $cluster->create_cluster_ok('MyApp1', 'MyApp2');
-
+ 
  my @urls = @{ $cluster->urls };
  my $t = $cluster->t; # an instance of Test::Mojo
  
  $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
  $t->get_ok("$url[1]/another_path");    # tests against MyApp2
+ 
+ __END__
+ 
+ @@ etc/MyApp1.conf
+ ---
+ # Clustericious configuration 
+ url <%= cluster->url %>
+ url_for_my_app2: <%= cluster->urls->[1] %>
 
 =head1 DESCRIPTION
 
@@ -32,6 +42,66 @@ If you are testing against Clustericious applications, it is important to
 either use this module as early as possible, or use L<File::HomeDir::Test>
 as the very first module in your test, as testing Clustericious configurations
 depend on the testing home directory being setup by L<File::HomeDir::Test>.
+
+In addition to passing L<Clustericious> configurations into the
+C<create_cluster_ok> method as describe below, you can include configuration
+in the data section of your test script.  The configuration files use 
+L<Clustericious::Config>, so you can use L<Mojo::Template> directives to 
+embed Perl code in the configuration.  You can access the L<Test::Clustericious::Cluster>
+instance from within the configuration using the C<cluster> function, which
+can be useful for getting the URL for the your and other service URLs.
+
+ __END__
+ 
+ @@ etc/Foo.conf
+ ---
+ url <%= cluster->url %>
+ % # because YAML is (mostly) a super set of JSON you can
+ % # convert perl structures into config items using json
+ % # function:
+ % # (json method requires Clustericious::Config 0.25)
+ other_urls: <%= json [ @{ cluster->urls } ] %>
+
+You can also put perl code in the data section of your test file, which
+can be useful if there isn't a another good place to put it.
+
+ __END__
+ 
+ @@ lib/FooApp.pm
+ package FooApp;
+ 
+ # FooApp is a Mojolicious app
+ 
+ use Mojo::Base qw( Mojolicious );
+ 
+ sub startup
+ {
+   shift->routes->get('/' => sub { shift->render(text => 'hello there from foo') });
+ }
+ 
+ 1;
+ 
+ @@ lib/BarApp.pm
+ package BarApp;
+ 
+ # BarApp is a Clustericious::App
+ 
+ use strict;
+ use warnings;
+ use base qw( Clustericious::App );
+ 
+ 1;
+ 
+ @@ lib/BarApp/Routes.pm
+ package BarApp::Routes;
+ 
+ use strict;
+ use warnings;
+ use Clustericious::RouteBuilder;
+ 
+ get '/' => sub { shift->render(text => 'hello there from bar') };
+ 
+ 1;
 
 =head1 CONSTRUCTOR
 
