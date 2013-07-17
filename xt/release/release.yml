@@ -9,6 +9,8 @@ pod_spelling_system:
     - beowulf
     - url
     - urls
+    - FooApp
+    - BarApp
 
 pod_coverage:
   # format is "Class#method" or "Class", regex allowed

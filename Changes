@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - documentation
+  - inline perl code gets put in front of @INC
 
 0.05      2013-07-14 22:33:34 America/New_York
   - support for non-inlined lite apps
