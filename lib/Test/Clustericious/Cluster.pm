@@ -459,15 +459,30 @@ sub create_cluster_ok
           $has_clustericious_config = 1;
           my $helper = sub { return $self };
         
-          # TODO: this is ::Helpers now
-          require Clustericious::Config::Plugin;
+          state $class;
+          
+          unless(defined $class)
+          {
+            if(eval q{ require Clustericious::Config::Helpers; 1})
+            {
+              $class = 'Clustericious::Config::Helpers';
+              push @Clustericious::Config::Helpers::EXPORT, 'cluster';
+            }
+            else
+            {
+              require Clustericious::Config::Plugin;
+              $class = 'Clustericious::Config::Plugin';
+              push @Clustericious::Config::Plugin::EXPORT, 'cluster';
+            }
+          }
+        
           do {
+            # there are a multitude of sins here aren't there?
             no warnings 'redefine';
             no warnings 'once';
-            *Clustericious::Config::Plugin::cluster = $helper;
+            no strict 'refs';
+            *{join '::', $class, 'cluster'} = $helper;
           };
-          push @Clustericious::Config::Plugin::EXPORT, 'cluster'
-            unless grep { $_ eq 'cluster' } @Clustericious::Config::Plugin::EXPORT;
         }
       }
     }
