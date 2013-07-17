@@ -345,6 +345,7 @@ sub create_cluster_ok
           $has_clustericious_config = 1;
           my $helper = sub { return $self };
         
+          # TODO: this is ::Helpers now
           require Clustericious::Config::Plugin;
           do {
             no warnings 'redefine';
