@@ -508,7 +508,8 @@ sub create_cluster_ok
     {
       foreach my $dir (@{ $self->{lite_path} })
       {
-        if(-x "$dir/$app_name")
+        if(($^O eq 'MSWin32' && -e "$dir/$app_name")
+        || (-x "$dir/$app_name"))
         {
           $app = _load_lite_app("$dir/$app_name");
           if(my $error = $@)
