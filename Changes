@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.06_01   2013-07-18 13:45:53 America/New_York
   - MSWin32 compatability fixes
 
 0.06      2013-07-18 09:09:06 America/New_York
