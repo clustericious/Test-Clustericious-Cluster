@@ -298,7 +298,6 @@ BEGIN {
   unshift @INC, sub {
     my($self, $file) = @_;
 
-    $DB::single = 1;  
     return $inc_hook->($self, $file) if $inc_hook;
    
     state $loader;
