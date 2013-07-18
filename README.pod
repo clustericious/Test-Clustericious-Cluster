@@ -6,7 +6,7 @@ Test::Clustericious::Cluster - Test an imaginary beowulf cluster of Clustericiou
 
 =head1 VERSION
 
-version 0.05_01
+version 0.06
 
 =head1 SYNOPSIS
 

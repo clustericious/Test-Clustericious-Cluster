@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.06      2013-07-18 09:09:06 America/New_York
+  - promote to production
+
 0.05_01   2013-07-17 16:36:31 America/New_York
   - documentation
   - inline perl code gets put in front of @INC
