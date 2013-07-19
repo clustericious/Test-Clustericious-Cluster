@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.07      2013-07-19 16:17:12 America/New_York
+  - promote to production
+
 0.06_01   2013-07-18 13:45:53 America/New_York
   - MSWin32 compatability fixes
 
