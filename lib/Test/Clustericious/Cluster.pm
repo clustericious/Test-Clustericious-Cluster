@@ -491,7 +491,29 @@ sub create_cluster_ok
     }
     
     my $app;
+    # we want to try to load class first, so that YourApp.pm
+    # will be picked over lite app yourapp on MSWin32 
+    # (which is case insensative).  So we save the error
+    # (from $@) and only push it onto the @errors list
+    # if loading as a lite app also fails.
+    my $first_try_error;
     
+    unless(defined $app) 
+    {
+      $app = eval qq{
+        use $app_name;
+        if($app_name->isa('Clustericious::App'))
+        {
+          eval { # if they have Clustericious::Log 0.11 or better
+            require Test::Clustericious::Log;
+            Test::Clustericious::Log->import;
+          };
+        }
+        $app_name->new(\$config);
+      };
+      my $first_try_error = $@;
+    }
+
     unless(defined $app)
     {
       if(my $script = $loader->data($caller, "script/$app_name"))
@@ -519,23 +541,12 @@ sub create_cluster_ok
       }
     }
     
-    unless(defined $app) 
+    unless(defined $app)
     {
-      $app = eval qq{
-        use $app_name;
-        if($app_name->isa('Clustericious::App'))
-        {
-          eval { # if they have Clustericious::Log 0.11 or better
-            require Test::Clustericious::Log;
-            Test::Clustericious::Log->import;
-          };
-        }
-        $app_name->new(\$config);
-      };
-      if(my $error = $@)
-      { push @errors, [ $app_name, $error ] }
+      push @errors, [ $app_name, $first_try_error ]
+        if $first_try_error;
     }
-
+    
     push @{ $self->apps }, $app;
     if(defined $app)
     { $self->_add_app($self->url, $app, $#{ $self->apps }); }

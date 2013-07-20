@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - work around the limitations of case insensative filesystems
+    by trying YourApp before lite app yourapp
 
 0.07      2013-07-19 16:17:12 America/New_York
   - promote to production
