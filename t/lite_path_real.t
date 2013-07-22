@@ -16,7 +16,7 @@ do {
   print $fh "#!/usr/bin/perl\n";
   print $fh "use Mojolicious::Lite;\n";
   print $fh "get '/' => sub { shift->render( text => 'bar' ) };\n";
-  print $fh "app;\n";
+  print $fh "app->start;\n";
   close $fh;
 };
 

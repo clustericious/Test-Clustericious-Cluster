@@ -21,4 +21,4 @@ __DATA__
 #!/usr/bin/perl
 use Mojolicious::Lite;
 get '/' => sub { shift->render(text => 'bar') };
-app;
+app->start;

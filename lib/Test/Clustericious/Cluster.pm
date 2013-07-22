@@ -375,6 +375,7 @@ sub _add_ua
 sub _load_lite_app
 {
   my($app_path, $script) = @_;
+  local @ARGV = ( eval => 'app');
   state $index = 0;
   eval '# line '. __LINE__ . ' "' . __FILE__ . qq("\n) . sprintf(q{
     if(defined $script)
