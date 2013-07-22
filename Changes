@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.09      2013-07-22 06:30:30 America/New_York
   - make it work with a mojo lite app that returns app->start
 
 0.08      2013-07-19 22:50:51 America/New_York
