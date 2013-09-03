@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.10      2013-09-03 18:14:15 -0400
   - Clustericious specific tests require Clustericious 0.9930
     (they are skipped if not installed)
 
