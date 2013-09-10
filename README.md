@@ -2,29 +2,21 @@
 
 Test an imaginary beowulf cluster of Clustericious services
 
-# VERSION
-
-version 0.10
-
 # SYNOPSIS
 
     use Test::Clustericious::Cluster;
     
-
     # suppose MyApp1 isa Clustericious::App and
     # MyApp2 is a Mojolicious app
     my $cluster = Test::Clustericious::Cluster->new;
     $cluster->create_cluster_ok('MyApp1', 'MyApp2');
     
-
     my @urls = @{ $cluster->urls };
     my $t = $cluster->t; # an instance of Test::Mojo
     
-
     $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
     $t->get_ok("$url[1]/another_path");    # tests against MyApp2
     
-
     __DATA__
     
 
@@ -56,7 +48,6 @@ can be useful for getting the URL for the your and other service URLs.
 
     __DATA__
     
-
     @@ etc/Foo.conf
     ---
     url <%= cluster->url %>
@@ -75,33 +66,28 @@ example embeds as [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) app 
     $cluster->create_cluster_ok('FooApp', 'BarApp');
     ...
     
-
     __DATA__
     
 
     @@ lib/FooApp.pm
     package FooApp;
     
-
     # FooApp is a Mojolicious app
     
 
     use Mojo::Base qw( Mojolicious );
     
-
     sub startup
     {
       shift->routes->get('/' => sub { shift->render(text => 'hello there from foo') });
     }
     
-
     1;
     
 
     @@ lib/BarApp.pm
     package BarApp;
     
-
     # BarApp is a Clustericious::App
     
 
@@ -109,19 +95,16 @@ example embeds as [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) app 
     use warnings;
     use base qw( Clustericious::App );
     
-
     1;
     
 
     @@ lib/BarApp/Routes.pm
     package BarApp::Routes;
     
-
     use strict;
     use warnings;
     use Clustericious::RouteBuilder;
     
-
     get '/' => sub { shift->render(text => 'hello there from bar') };
     
 
@@ -138,24 +121,20 @@ example that mocks parts of [Net::hostent](http://search.cpan.org/perldoc?Net::h
     use Test::Clustericious::Cluster;
     use Test::More tests => 2;
     
-
     use_ok('Net::hostent');
     is gethost('bar')->name, 'foo.example.com', 'gethost(bar).name = foo.example.com';
     
-
     __DATA__
     
 
     @@ lib/Net/hostent.pm
     package Net::hostent;
     
-
     use strict;
     use warnings;
     use base qw( Exporter );
     our @EXPORT = qw( gethost );
     
-
     sub gethost
     {
       my $input_name = shift;
@@ -163,11 +142,9 @@ example that mocks parts of [Net::hostent](http://search.cpan.org/perldoc?Net::h
       bless {}, 'Net::hostent';
     }
     
-
     sub name { 'foo.example.com' }
     sub aliases { qw( foo.example.com foo bar baz ) }
     
-
     1;
 
 # CONSTRUCTOR
