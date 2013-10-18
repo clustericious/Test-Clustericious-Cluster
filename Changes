@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - rm undocumented and never used private _builder attribute
 
 0.10      2013-09-03 18:14:15 -0400
   - Clustericious specific tests require Clustericious 0.9930

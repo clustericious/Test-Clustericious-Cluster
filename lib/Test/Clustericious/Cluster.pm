@@ -172,8 +172,6 @@ sub new
 
   my $t = $args->{t} // Test::Mojo->new;
   
-  my $builder = __PACKAGE__->builder;
-  
   my $sep = $^O eq 'MSWin32' ? ';' : ':';
   my $lite_path = [ split $sep, $ENV{PATH} ];
 
@@ -182,7 +180,6 @@ sub new
   
   bless { 
     t           => $t, 
-    builder     => $builder, 
     urls        => [], 
     apps        => [], 
     index       => -1,
@@ -194,8 +191,6 @@ sub new
     lite_path   => $lite_path,
   }, $class;
 }
-
-sub _builder { shift->{builder} }
 
 =head1 ATTRIBUTES
 
