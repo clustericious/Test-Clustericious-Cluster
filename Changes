@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.11      2013-10-17 22:00:17 -0400
   - rm undocumented and never used private _builder attribute
 
 0.10      2013-09-03 18:14:15 -0400

@@ -19,7 +19,6 @@ Test an imaginary beowulf cluster of Clustericious services
     
     __DATA__
     
-
     @@ etc/MyApp1.conf
     ---
     # Clustericious configuration 
@@ -68,13 +67,11 @@ example embeds as [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) app 
     
     __DATA__
     
-
     @@ lib/FooApp.pm
     package FooApp;
     
     # FooApp is a Mojolicious app
     
-
     use Mojo::Base qw( Mojolicious );
     
     sub startup
@@ -84,20 +81,17 @@ example embeds as [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) app 
     
     1;
     
-
     @@ lib/BarApp.pm
     package BarApp;
     
     # BarApp is a Clustericious::App
     
-
     use strict;
     use warnings;
     use base qw( Clustericious::App );
     
     1;
     
-
     @@ lib/BarApp/Routes.pm
     package BarApp::Routes;
     
@@ -107,7 +101,6 @@ example embeds as [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) app 
     
     get '/' => sub { shift->render(text => 'hello there from bar') };
     
-
     1;
 
 These examples are full apps, but you could also use this
@@ -126,7 +119,6 @@ example that mocks parts of [Net::hostent](http://search.cpan.org/perldoc?Net::h
     
     __DATA__
     
-
     @@ lib/Net/hostent.pm
     package Net::hostent;
     
