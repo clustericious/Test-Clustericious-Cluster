@@ -1,3 +1,7 @@
+Clustericious
+Clustericious::Client
+Clustericious::Config
+Clustericious::Log
 EV
 ExtUtils::MakeMaker
 File::HomeDir
