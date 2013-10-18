@@ -1,26 +1,51 @@
 use strict;
 use warnings;
-BEGIN { eval q{ use EV } } # avoid warning
 use Test::More tests => 1;
-
-my @mods = sort qw(
-  Mojolicious
-  Clustericious
-  Clustericious::Config
-  Clustericious::Log
-  Clustericious::Client
-  File::HomeDir
-);
-
-diag "";
-
-foreach my $mod (@mods)
-{
-  my $version = eval qq{ use $mod; \$${mod}::VERSION };
-  if($@)
-  { diag sprintf("%-22s : not installed", $mod) }
-  else
-  { diag sprintf("%-22s : $version", $mod) }
-}
+BEGIN { eval q{ use EV } }
+eval q{ 
+  use FindBin ();
+  use File::Spec;
+  1;
+} || die $@;
 
 pass 'okay';
+
+my @modules;
+do {
+  my $fh;
+  open($fh, '<', File::Spec->catfile($FindBin::Bin, '00_diag.txt'));
+  @modules = <$fh>;
+  close $fh;
+  chomp @modules;
+};
+
+my $max = 1;
+$max = $_ > $max ? $_ : $max for map { length $_ } @modules;
+our $format = "%-${max}s %s"; 
+
+diag '';
+diag '';
+diag '';
+
+diag sprintf $format, 'perl ', $^V;
+
+require(File::Spec->catfile($FindBin::Bin, '00_diag.pl'))
+  if -e File::Spec->catfile($FindBin::Bin, '00_diag.pl');
+
+foreach my $module (@modules)
+{
+  if(eval qq{ require $module; 1 })
+  {
+    my $ver = eval qq{ \$$module\::VERSION };
+    $ver = 'undef' unless defined $ver;
+    diag sprintf $format, $module, $ver;
+  }
+  else
+  {
+    diag sprintf $format, $module, '-';
+  }
+}
+
+diag '';
+diag '';
+diag '';
