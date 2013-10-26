@@ -29,12 +29,15 @@ package Foo;
 use v5.10;
 use Mojo::Base qw( Mojolicious );
 
+has 'arg1';
+has 'arg2';
+
 sub startup
 {
-  my($self, $config) = @_;
+  my($self) = @_;
   $self->routes->get('/' => sub { shift->render(text => 'welcome') });
-  $self->routes->get('/foo' => sub { shift->render(text => $config->{arg1} // 'undefined') });
-  $self->routes->get('/bar' => sub { shift->render(text => $config->{arg2} // 'undefined') });
+  $self->routes->get('/foo' => sub { shift->render(text => $self->arg1 // 'undefined') });
+  $self->routes->get('/bar' => sub { shift->render(text => $self->arg2 // 'undefined') });
 }
 
 1;
