@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Mojolicious 4.50 compatability
 
 0.11      2013-10-17 22:00:17 -0400
   - rm undocumented and never used private _builder attribute

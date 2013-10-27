@@ -7,8 +7,8 @@ use Test::More tests => 7;
 my $cluster = Test::Clustericious::Cluster->new;
 
 $cluster->create_cluster_ok(
-  [ MyApp1 => { ua => $cluster->_add_ua } ],
-  [ MyApp2 => { ua => $cluster->_add_ua } ],
+  [ MyApp1 => { ua1 => $cluster->_add_ua } ],
+  [ MyApp2 => { ua1 => $cluster->_add_ua } ],
 );
 
 my $t = $cluster->t;
@@ -32,12 +32,14 @@ use strict;
 use warnings;
 use Mojo::Base qw( Mojolicious );
 
+has 'ua1';
+
 sub startup
 {
-  my($self, $config) = @_;
+  my($self) = @_;
   $self->routes->get('/redirect1' => sub {
     my($c) = @_;
-    $c->render(text => '(' . $config->{ua}->get("$main::urls[1]/redirect2")->res->body . ')');
+    $c->render(text => '(' . $self->ua1->get("$main::urls[1]/redirect2")->res->body . ')');
   });
   $self->routes->get('/end_of_road' => sub {
     my $c = shift;
@@ -54,12 +56,14 @@ use strict;
 use warnings;
 use Mojo::Base qw( Mojolicious );
 
+has 'ua1';
+
 sub startup
 {
   my($self, $config) =@_;
   $self->routes->get('/redirect2' => sub {
     my($c) = @_;
-    $c->render(text => '[' . $config->{ua}->get("$main::urls[0]/end_of_road")->res->body . ']');
+    $c->render(text => '[' . $self->ua1->get("$main::urls[0]/end_of_road")->res->body . ']');
   });
 }
 
