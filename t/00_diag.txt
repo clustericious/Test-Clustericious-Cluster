@@ -1,3 +1,4 @@
+Carp::Always
 Clustericious
 Clustericious::Client
 Clustericious::Config

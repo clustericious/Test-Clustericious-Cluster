@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Carp::Always;
 use Test::Clustericious::Cluster;
 use Test::More tests => 22;
 
