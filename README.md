@@ -28,20 +28,20 @@ Test an imaginary beowulf cluster of Clustericious services
 # DESCRIPTION
 
 This module allows you to test an entire cluster of Clustericious services
-(or just one or two).  The only prerequisites are [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) and 
-[File::HomeDir](http://search.cpan.org/perldoc?File::HomeDir), so you can mix and match [Mojolicious](http://search.cpan.org/perldoc?Mojolicious), [Mojolicious::Lite](http://search.cpan.org/perldoc?Mojolicious::Lite)
-and full [Clustericious](http://search.cpan.org/perldoc?Clustericious) apps and test how they interact.
+(or just one or two).  The only prerequisites are [Mojolicious](https://metacpan.org/pod/Mojolicious) and 
+[File::HomeDir](https://metacpan.org/pod/File::HomeDir), so you can mix and match [Mojolicious](https://metacpan.org/pod/Mojolicious), [Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite)
+and full [Clustericious](https://metacpan.org/pod/Clustericious) apps and test how they interact.
 
 If you are testing against Clustericious applications, it is important to
-either use this module as early as possible, or use [File::HomeDir::Test](http://search.cpan.org/perldoc?File::HomeDir::Test)
+either use this module as early as possible, or use [File::HomeDir::Test](https://metacpan.org/pod/File::HomeDir::Test)
 as the very first module in your test, as testing Clustericious configurations
-depend on the testing home directory being setup by [File::HomeDir::Test](http://search.cpan.org/perldoc?File::HomeDir::Test).
+depend on the testing home directory being setup by [File::HomeDir::Test](https://metacpan.org/pod/File::HomeDir::Test).
 
-In addition to passing [Clustericious](http://search.cpan.org/perldoc?Clustericious) configurations into the
+In addition to passing [Clustericious](https://metacpan.org/pod/Clustericious) configurations into the
 `create_cluster_ok` method as describe below, you can include configuration
 in the data section of your test script.  The configuration files use 
-[Clustericious::Config](http://search.cpan.org/perldoc?Clustericious::Config), so you can use [Mojo::Template](http://search.cpan.org/perldoc?Mojo::Template) directives to 
-embed Perl code in the configuration.  You can access the [Test::Clustericious::Cluster](http://search.cpan.org/perldoc?Test::Clustericious::Cluster)
+[Clustericious::Config](https://metacpan.org/pod/Clustericious::Config), so you can use [Mojo::Template](https://metacpan.org/pod/Mojo::Template) directives to 
+embed Perl code in the configuration.  You can access the [Test::Clustericious::Cluster](https://metacpan.org/pod/Test::Clustericious::Cluster)
 instance from within the configuration using the `cluster` function, which
 can be useful for getting the URL for the your and other service URLs.
 
@@ -58,7 +58,7 @@ can be useful for getting the URL for the your and other service URLs.
 
 You can also put perl code in the data section of your test file, which
 can be useful if there isn't a another good place to put it.  This
-example embeds as [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) app "FooApp" and a [Clustericious::App](http://search.cpan.org/perldoc?Clustericious::App)
+example embeds as [Mojolicious](https://metacpan.org/pod/Mojolicious) app "FooApp" and a [Clustericious::App](https://metacpan.org/pod/Clustericious::App)
 "BarApp" into the test script itself:
 
     ...
@@ -107,7 +107,7 @@ These examples are full apps, but you could also use this
 feature to implement mocks to test parts of your program
 that use resources that aren't easily available during
 unit testing, or may change from host to host.  Here is an
-example that mocks parts of [Net::hostent](http://search.cpan.org/perldoc?Net::hostent):
+example that mocks parts of [Net::hostent](https://metacpan.org/pod/Net::hostent):
 
     use strict;
     use warnings;
@@ -152,7 +152,7 @@ If not provided, then a new one will be created.
 
 ### lite\_path
 
-List reference of paths to search for [Mojolicious::Lite](http://search.cpan.org/perldoc?Mojolicious::Lite)
+List reference of paths to search for [Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite)
 apps.
 
 # ATTRIBUTES
@@ -174,12 +174,12 @@ Returned as an array ref.
 ## index
 
 The index of the current app (used from within a 
-[Clustericious::Config](http://search.cpan.org/perldoc?Clustericious::Config) configuration.
+[Clustericious::Config](https://metacpan.org/pod/Clustericious::Config) configuration.
 
 ## url
 
 The url of the current app (used from within a
-[Clustericious::Config](http://search.cpan.org/perldoc?Clustericious::Config) configuration.
+[Clustericious::Config](https://metacpan.org/pod/Clustericious::Config) configuration.
 
 ## auth\_url
 
@@ -194,11 +194,11 @@ Each element in the services array may be either
 
 - string
 
-    The string is taken to be the [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) or [Clustericious](http://search.cpan.org/perldoc?Clustericious)
+    The string is taken to be the [Mojolicious](https://metacpan.org/pod/Mojolicious) or [Clustericious](https://metacpan.org/pod/Clustericious)
     application class name.  No configuration is created or passed into
     the App.
 
-    This can also be the name of a [Mojolicious::Lite](http://search.cpan.org/perldoc?Mojolicious::Lite) application.
+    This can also be the name of a [Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite) application.
     The PATH environment variable will be used to search for the
     lite application.  The script for the lite app must be executable.
     You can specify additional directories to search using the
@@ -206,33 +206,33 @@ Each element in the services array may be either
 
 - list reference in the form: \[ string, hashref \]
 
-    The string is taken to be the [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) application name.
+    The string is taken to be the [Mojolicious](https://metacpan.org/pod/Mojolicious) application name.
     The hashref is the configuration passed into the constructor
-    of the app.  This form should NOT be used for [Clustericious](http://search.cpan.org/perldoc?Clustericious)
+    of the app.  This form should NOT be used for [Clustericious](https://metacpan.org/pod/Clustericious)
     apps (see the third form).
 
 - list reference in the form: \[ string, string \]
 
-    The first string is taken to be the [Clustericious](http://search.cpan.org/perldoc?Clustericious) application
+    The first string is taken to be the [Clustericious](https://metacpan.org/pod/Clustericious) application
     name.  The second string is the configuration in either YAML
-    or JSON format (may include [Mojo::Template](http://search.cpan.org/perldoc?Mojo::Template) templating in it,
-    see [Clustericious::Config](http://search.cpan.org/perldoc?Clustericious::Config) for details).  This form requires
-    that you have [Clustericous](http://search.cpan.org/perldoc?Clustericous) installed, and of course should
-    not be used for non-[Clustericious](http://search.cpan.org/perldoc?Clustericious) [Mojolicious](http://search.cpan.org/perldoc?Mojolicious) applications.
+    or JSON format (may include [Mojo::Template](https://metacpan.org/pod/Mojo::Template) templating in it,
+    see [Clustericious::Config](https://metacpan.org/pod/Clustericious::Config) for details).  This form requires
+    that you have [Clustericous](https://metacpan.org/pod/Clustericous) installed, and of course should
+    not be used for non-[Clustericious](https://metacpan.org/pod/Clustericious) [Mojolicious](https://metacpan.org/pod/Mojolicious) applications.
 
 ## $cluster->create\_plugauth\_lite\_ok( %args )
 
-Add a [PlugAuth::Lite](http://search.cpan.org/perldoc?PlugAuth::Lite) service to the test cluster.  The
-`%args` are passed directly into the [PlugAuth::Lite](http://search.cpan.org/perldoc?PlugAuth::Lite)
+Add a [PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite) service to the test cluster.  The
+`%args` are passed directly into the [PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite)
 constructor.
 
-You can retrieve the URL for the [PlugAuth::Lite](http://search.cpan.org/perldoc?PlugAuth::Lite) service
+You can retrieve the URL for the [PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite) service
 using the `auth_url` attribute.
 
-This feature requires [PlugAuth::Lite](http://search.cpan.org/perldoc?PlugAuth::Lite) and [Clustericious](http://search.cpan.org/perldoc?Clustericious) 
+This feature requires [PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite) and [Clustericious](https://metacpan.org/pod/Clustericious) 
 0.9925 or better, though neither are a prerequisite of this
 module.  If you are using this method you need to either require
-[PlugAuth::Lite](http://search.cpan.org/perldoc?PlugAuth::Lite) and [Clustericious](http://search.cpan.org/perldoc?Clustericious) 0.9925 or better, or skip 
+[PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite) and [Clustericious](https://metacpan.org/pod/Clustericious) 0.9925 or better, or skip 
 your test in the event that the user has an earlier version. 
 For example:
 
