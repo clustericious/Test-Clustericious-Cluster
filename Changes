@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.12_01   2014-04-08 12:09:19 -0400
   - Experimental: catch error in stop and report as stop_ok failure
 
 0.12      2013-10-27 04:15:58 -0400
