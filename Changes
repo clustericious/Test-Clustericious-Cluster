@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Experimental: catch error in stop and report as stop_ok failure
 
 0.12      2013-10-27 04:15:58 -0400
   - Mojolicious 4.50 compatability
