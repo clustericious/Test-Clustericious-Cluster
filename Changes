@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
 
 0.12_02   2014-04-08 19:55:32 -0400
+  - temp use Carp::Always for additional diagnostic
 
 0.12_01   2014-04-08 12:09:19 -0400
   - Experimental: catch error in stop and report as stop_ok failure
