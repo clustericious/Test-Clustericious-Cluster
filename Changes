@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.12_03   2014-04-09 06:38:41 -0400
   - Experimental: explicitly stop server before undefing in stop_ok
 
 0.12_02   2014-04-08 19:55:32 -0400
