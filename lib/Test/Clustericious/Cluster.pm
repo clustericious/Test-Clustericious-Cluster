@@ -657,6 +657,7 @@ sub stop_ok
   {
     my $app_name = ref $app;
     $test_name //= "stop service $app_name ($index)";
+    $_->stop for @{ $self->{app_servers}->[$index] };
     eval { @{ $self->{app_servers}->[$index] } = () };
     $error = $@;
     $ok = 0 if $error;
