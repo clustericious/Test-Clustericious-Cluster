@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.12_05   2014-04-10 13:25:54 -0400
   - Experimental: fixed additional diagnostics
+  - Use Module::Build instead of MakeMaker
 
 0.12_04   2014-04-10 05:44:00 -0400
   - Experimental: additional diagnostics
