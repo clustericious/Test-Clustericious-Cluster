@@ -4,6 +4,21 @@ use Carp::Always;
 use Test::Clustericious::Cluster;
 use Test::More tests => 22;
 
+END {
+  diag '';
+  diag '';
+  diag '';
+  foreach my $module (sort keys %INC)
+  {
+    my $path    = $INC{$module};
+    $module     =~ s/\.pm//;
+    $module     =~ s/\//::/g;
+    my $version = eval qq{ no warnings; \$$module\::VERSION };
+    $version    = '-' unless defined $version;
+    diag sprintf("%30s %6s %s\n", $module, $version, $path);
+  }
+}
+
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(qw( MyApp MyApp MyApp ));
 my $t = $cluster->t;
