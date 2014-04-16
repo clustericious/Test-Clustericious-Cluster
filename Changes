@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Experimental: turn off IPv6 and TLS support in t/stop.t
 
 0.12_06   2014-04-16 14:11:20 -0400
   - Experimental: additional diagnostics
