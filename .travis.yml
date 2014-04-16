@@ -3,7 +3,7 @@ language: perl
 install:
   - cpanm -n Mojolicious
   - cpanm -n File::HomeDir
-  - cpanm -n Carp::Always
+  - cpanm -n Carp::Always::Dump
 
 perl:
   - "5.10"
