@@ -1,8 +1,9 @@
-Carp::Always
+Carp::Always::Dump
 Clustericious
 Clustericious::Client
 Clustericious::Config
 Clustericious::Log
+Devel::Hide
 EV
 File::HomeDir
 Module::Build
