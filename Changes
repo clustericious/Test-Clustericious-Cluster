@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.12_06   2014-04-16 14:11:20 -0400
   - Experimental: additional diagnostics
 
 0.12_05   2014-04-10 13:25:54 -0400
