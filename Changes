@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Experimental: additional diagnostics
 
 0.12_05   2014-04-10 13:25:54 -0400
   - Experimental: fixed additional diagnostics

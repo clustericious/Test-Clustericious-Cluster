@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Carp::Always;
+use Devel::Hide qw( EV );
+use Carp::Always::Dump;
 use Test::Clustericious::Cluster;
 use Test::More tests => 22;
 
