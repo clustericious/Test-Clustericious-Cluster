@@ -141,7 +141,9 @@ example that mocks parts of [Net::hostent](https://metacpan.org/pod/Net::hostent
 
 # CONSTRUCTOR
 
-## Test::Clustericious::Cluster->new( %args )
+## new
+
+    my $cluster = Test::Clustericious::Cluster->new( %args )
 
 Arguments:
 
@@ -159,35 +161,49 @@ apps.
 
 ## t
 
+    my $t = $cluster->t;
+
 The instance of Test::Mojo used in testing.
 
 ## urls
+
+    my @urls = @{ $cluster->urls };
 
 The URLs for the various services.
 Returned as an array ref.
 
 ## apps
 
+    my @apps = @{ $cluster->apps };
+
 The application objects for the various services.
 Returned as an array ref.
 
 ## index
+
+    my $index = $cluster->index;
 
 The index of the current app (used from within a 
 [Clustericious::Config](https://metacpan.org/pod/Clustericious::Config) configuration.
 
 ## url
 
+    my $url = $cluster->url;
+
 The url of the current app (used from within a
 [Clustericious::Config](https://metacpan.org/pod/Clustericious::Config) configuration.
 
 ## auth\_url
 
+    my $url = $cluster->auth_url;
+
 The URL for the PlugAuth::Lite service, if one has been started.
 
 # METHODS
 
-## $cluster->create\_cluster\_ok( @services )
+## create\_cluster\_ok
+
+    $cluster->create_cluster_ok( @services )
 
 Adds the given services to the test cluster.
 Each element in the services array may be either
@@ -220,7 +236,9 @@ Each element in the services array may be either
     that you have [Clustericous](https://metacpan.org/pod/Clustericous) installed, and of course should
     not be used for non-[Clustericious](https://metacpan.org/pod/Clustericious) [Mojolicious](https://metacpan.org/pod/Mojolicious) applications.
 
-## $cluster->create\_plugauth\_lite\_ok( %args )
+## create\_plugauth\_lite\_ok
+
+    $cluster->create_plugauth_lite_ok( %args )
 
 Add a [PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite) service to the test cluster.  The
 `%args` are passed directly into the [PlugAuth::Lite](https://metacpan.org/pod/PlugAuth::Lite)
@@ -247,19 +265,27 @@ For example:
         unless eval q{ use PlugAuth::Lite; 1 };
     };
 
-## $cluster->stop\_ok( $index, \[ $test\_name \])
+## stop\_ok
+
+    $cluster->stop_ok( $index );
+    $cluster->stop_ok( $index, $test_name);
 
 Stop the given service.  The service is specified by 
 an index, the first application when you created the
 cluster is 0, the second is 1, and so on.
 
-## $cluster->start\_ok( $index, \[ $test\_name \] )
+## start\_ok
+
+    $cluster->start_ok( $index );
+    $cluster->start_ok( $index, $test_name );
 
 Start the given service.  The service is specified by 
 an index, the first application when you created the
 cluster is 0, the second is 1, and so on.
 
-## $cluster->create\_ua
+## create\_ua
+
+    my $ua = $cluster->create_ua;
 
 Create a new instance of Mojo::UserAgent which can be used
 to connect to nodes in the test cluster.

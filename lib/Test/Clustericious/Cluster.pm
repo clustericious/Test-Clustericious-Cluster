@@ -138,7 +138,9 @@ BEGIN { $ENV{MOJO_LOG_LEVEL} = 'fatal' }
 
 =head1 CONSTRUCTOR
 
-=head2 Test::Clustericious::Cluster->new( %args )
+=head2 new
+
+ my $cluster = Test::Clustericious::Cluster->new( %args )
 
 Arguments:
 
@@ -196,6 +198,8 @@ sub new
 
 =head2 t
 
+ my $t = $cluster->t;
+
 The instance of Test::Mojo used in testing.
 
 =cut
@@ -203,6 +207,8 @@ The instance of Test::Mojo used in testing.
 sub t { shift->{t} }
 
 =head2 urls
+
+ my @urls = @{ $cluster->urls };
 
 The URLs for the various services.
 Returned as an array ref.
@@ -213,6 +219,8 @@ sub urls { shift->{urls} }
 
 =head2 apps
 
+ my @apps = @{ $cluster->apps };
+
 The application objects for the various services.
 Returned as an array ref.
 
@@ -221,6 +229,8 @@ Returned as an array ref.
 sub apps { shift->{apps} }
 
 =head2 index
+
+ my $index = $cluster->index;
 
 The index of the current app (used from within a 
 L<Clustericious::Config> configuration.
@@ -231,6 +241,8 @@ sub index { shift->{index} }
 
 =head2 url
 
+ my $url = $cluster->url;
+
 The url of the current app (used from within a
 L<Clustericious::Config> configuration.
 
@@ -240,6 +252,8 @@ sub url { shift->{url} }
 
 =head2 auth_url
 
+ my $url = $cluster->auth_url;
+
 The URL for the PlugAuth::Lite service, if one has been started.
 
 =cut
@@ -248,7 +262,9 @@ sub auth_url { shift->{auth_url} }
 
 =head1 METHODS
 
-=head2 $cluster-E<gt>create_cluster_ok( @services )
+=head2 create_cluster_ok
+
+ $cluster->create_cluster_ok( @services )
 
 Adds the given services to the test cluster.
 Each element in the services array may be either
@@ -566,7 +582,9 @@ sub create_cluster_ok
   return $self;
 }
 
-=head2 $cluster-E<gt>create_plugauth_lite_ok( %args )
+=head2 create_plugauth_lite_ok
+
+ $cluster->create_plugauth_lite_ok( %args )
 
 Add a L<PlugAuth::Lite> service to the test cluster.  The
 C<%args> are passed directly into the L<PlugAuth::Lite>
@@ -636,7 +654,10 @@ sub create_plugauth_lite_ok
   return $self;
 }
 
-=head2 $cluster-E<gt>stop_ok( $index, [ $test_name ])
+=head2 stop_ok
+
+ $cluster->stop_ok( $index );
+ $cluster->stop_ok( $index, $test_name);
 
 Stop the given service.  The service is specified by 
 an index, the first application when you created the
@@ -677,7 +698,10 @@ sub stop_ok
   $ret;
 }
 
-=head2 $cluster-E<gt>start_ok( $index, [ $test_name ] )
+=head2 start_ok
+
+  $cluster->start_ok( $index );
+  $cluster->start_ok( $index, $test_name );
 
 Start the given service.  The service is specified by 
 an index, the first application when you created the
@@ -716,7 +740,9 @@ sub start_ok
   $tb->ok($ok, $test_name);
 }
 
-=head2 $cluster-E<gt>create_ua
+=head2 create_ua
+
+ my $ua = $cluster->create_ua;
 
 Create a new instance of Mojo::UserAgent which can be used
 to connect to nodes in the test cluster.
