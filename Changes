@@ -1,8 +1,11 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-  - promote to production
-  - rm experimental dep on Carp::Always / Carp::Always::Dump
+
+0.14      2014-04-17 03:26:32 -0400
+  - remove experimental dep on Carp::Always / Carp::Always::Dump
+  - remove some experimental diagnostics
+  - promote the rest to production
 
 0.12_07   2014-04-16 18:22:31 -0400
   - Experimental: turn off IPv6 and TLS support in t/stop.t
