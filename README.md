@@ -274,6 +274,9 @@ Stop the given service.  The service is specified by
 an index, the first application when you created the
 cluster is 0, the second is 1, and so on.
 
+See [CAVEATS](https://metacpan.org/pod/Test::Clustericious::Cluster#CAVEATS)
+below on interactions with IPv6 or TLS/SSL.
+
 ## start\_ok
 
     $cluster->start_ok( $index );
@@ -289,6 +292,25 @@ cluster is 0, the second is 1, and so on.
 
 Create a new instance of Mojo::UserAgent which can be used
 to connect to nodes in the test cluster.
+
+# CAVEATS
+
+Some combination of Mojolicious, FreeBSD, IPv6 and TLS/SSL
+seem to react badly to the use of 
+[stop\_ok](https://metacpan.org/pod/Test::Clustericious::Cluster#stop_ok).  The work
+around is to turn IPv6 and TLS/SSL off in the beginning
+of any tests that uses stop\_ok your test like thus:
+
+    use strict;
+    use warnings;
+    BEGIN { $ENV{MOJO_NO_IPV6} = 1; $ENV{MOJO_NO_TLS} = 1; }
+    use Test::Clustericious::Cluster;
+
+A proper fix would be desirable, see 
+
+https://github.com/plicease/Test-Clustericious-Cluster/issues/3
+
+If you want to help.
 
 # AUTHOR
 

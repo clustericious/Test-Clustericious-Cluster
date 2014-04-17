@@ -663,6 +663,9 @@ Stop the given service.  The service is specified by
 an index, the first application when you created the
 cluster is 0, the second is 1, and so on.
 
+See L<CAVEATS|Test::Clustericious::Cluster#CAVEATS>
+below on interactions with IPv6 or TLS/SSL.
+
 =cut
 
 sub stop_ok
@@ -755,3 +758,24 @@ sub create_ua
 }
 
 1;
+
+=head1 CAVEATS
+
+Some combination of Mojolicious, FreeBSD, IPv6 and TLS/SSL
+seem to react badly to the use of 
+L<stop_ok|Test::Clustericious::Cluster#stop_ok>.  The work
+around is to turn IPv6 and TLS/SSL off in the beginning
+of any tests that uses stop_ok your test like thus:
+
+ use strict;
+ use warnings;
+ BEGIN { $ENV{MOJO_NO_IPV6} = 1; $ENV{MOJO_NO_TLS} = 1; }
+ use Test::Clustericious::Cluster;
+
+A proper fix would be desirable, see 
+
+https://github.com/plicease/Test-Clustericious-Cluster/issues/3
+
+If you want to help.
+
+=cut
