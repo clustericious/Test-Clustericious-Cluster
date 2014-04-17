@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 BEGIN { $ENV{MOJO_NO_IPV6} = 1; $ENV{MOJO_NO_TLS} = 1; }
-use Carp::Always::Dump;
+#use Carp::Always::Dump;
 use Test::Clustericious::Cluster;
 use Test::More tests => 22;
 

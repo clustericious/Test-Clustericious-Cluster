@@ -1,4 +1,3 @@
-Carp::Always::Dump
 Clustericious
 Clustericious::Client
 Clustericious::Config
