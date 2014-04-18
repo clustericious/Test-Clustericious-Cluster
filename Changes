@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Experimental: better detection in t/stop.t
 
 0.14      2014-04-17 03:26:32 -0400
   - remove experimental dep on Carp::Always / Carp::Always::Dump
