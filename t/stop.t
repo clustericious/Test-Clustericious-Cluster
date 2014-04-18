@@ -4,7 +4,7 @@ BEGIN { $ENV{MOJO_NO_IPV6} = 1; $ENV{MOJO_NO_TLS} = 1; }
 #use Carp::Always::Dump;
 use Test::Clustericious::Cluster;
 use Test::More;
-use IO::Socket::IP;
+use IO::Socket::INET;
 
 plan skip_all => 'cannot turn of Mojo IPv6'
   if IO::Socket::INET->isa('IO::Socket::IP');
