@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.14_01   2014-04-18 08:34:05 -0400
   - Experimental: better detection in t/stop.t
 
 0.14      2014-04-17 03:26:32 -0400
