@@ -6,7 +6,7 @@ use Test::Clustericious::Cluster;
 use Test::More;
 use IO::Socket::INET;
 
-plan skip_all => 'cannot turn of Mojo IPv6'
+plan skip_all => 'cannot turn off Mojo IPv6'
   if IO::Socket::INET->isa('IO::Socket::IP');
 
 plan tests => 22;
