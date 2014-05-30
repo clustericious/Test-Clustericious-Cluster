@@ -403,6 +403,15 @@ sub _load_lite_app
   }, $index++);
 }
 
+sub _generate_port
+{
+  require IO::Socket::INET;
+  IO::Socket::INET->new(
+    Listen => 5, 
+    LocalAddr => '127.0.0.1',
+  )->sockport;
+}
+
 sub create_cluster_ok
 {
   my $self = shift;
@@ -410,7 +419,7 @@ sub create_cluster_ok
   my $total = scalar @_;
   my @urls = map { 
     my $url = Mojo::URL->new("http://127.0.0.1");
-    $url->port($self->t->ua->ioloop->generate_port);
+    $url->port(_generate_port);
     $url } (0..$total);
 
   push @{ $self->{urls} }, @urls;
@@ -633,7 +642,7 @@ sub create_plugauth_lite_ok
   {
     my $ua = $self->{auth_ua} = $self->_add_ua;
     my $url = Mojo::URL->new("http://127.0.0.1");
-    $url->port($self->t->ua->ioloop->generate_port);
+    $url->port(_generate_port);
   
     eval {
       require PlugAuth::Lite;
