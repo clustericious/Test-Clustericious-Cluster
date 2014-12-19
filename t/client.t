@@ -34,7 +34,7 @@ __DATA__
 @@ lib/MyApp.pm
 package MyApp;
 
-use Mojo::JSON;
+use Mojo::JSON qw( encode_json );
 use Mojo::Base qw( Mojolicious );
 
 sub startup
@@ -44,7 +44,7 @@ sub startup
   $self->routes->get('/version' => sub {
     my $c = shift;
     $c->tx->res->headers->content_type('application/json');
-    $c->render(text => Mojo::JSON->new->encode([ '1.00' ]));
+    $c->render(text => encode_json([ '1.00' ]));
   });
 }
 

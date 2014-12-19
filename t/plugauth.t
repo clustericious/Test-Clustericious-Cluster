@@ -3,11 +3,10 @@ use warnings;
 eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
 use Test::More;
+use PlugAuth::Lite;
 BEGIN {
   plan skip_all => 'test requires Clustericious 0.9931'
     unless eval q{ use Clustericious 0.9931; 1 };
-  plan skip_all => 'test requires PlugAuth::Lite'
-    unless eval q{ use PlugAuth::Lite; 1 };
 };
 plan tests => 12;
 
