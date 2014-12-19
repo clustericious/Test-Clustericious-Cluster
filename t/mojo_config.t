@@ -26,7 +26,7 @@ __DATA__
 @@ lib/Foo.pm
 package Foo;
 
-use v5.10;
+use 5.010001;
 use Mojo::Base qw( Mojolicious );
 
 has 'arg1';

@@ -2,7 +2,7 @@ package Test::PlugAuth;
 
 use strict;
 use warnings;
-use v5.10;
+use 5.010001;
 use PlugAuth::Lite;
 use Mojo::UserAgent;
 

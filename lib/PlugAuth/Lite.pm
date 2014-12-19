@@ -2,7 +2,7 @@ package PlugAuth::Lite;
 
 use strict;
 use warnings;
-use v5.10;
+use 5.010001;
 use Mojo::Base qw( Mojolicious );
 
 # ABSTRACT: Pluggable (lite) authentication and authorization server.

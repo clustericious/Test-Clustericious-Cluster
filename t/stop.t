@@ -74,7 +74,7 @@ package MyApp;
 
 use strict;
 use warnings;
-use v5.10;
+use 5.010001;
 use Mojo::Base qw( Mojolicious );
 
 sub startup

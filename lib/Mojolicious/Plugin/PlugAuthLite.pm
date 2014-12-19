@@ -2,7 +2,7 @@ package Mojolicious::Plugin::PlugAuthLite;
 
 use Mojo::Base qw( Mojolicious::Plugin );
 use Mojo::ByteStream qw( b );
-use v5.10;
+use 5.010001;
 
 # ABSTRACT: Add a minimal PlugAuth server to your Mojolicious application.
 # VERSION
