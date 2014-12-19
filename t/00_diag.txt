@@ -5,5 +5,7 @@ Clustericious::Log
 EV
 File::HomeDir
 Module::Build
+Mojo::ByteStream
 Mojolicious
+Mojolicious::Lite
 Test::More
