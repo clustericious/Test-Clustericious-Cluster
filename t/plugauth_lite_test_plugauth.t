@@ -3,8 +3,10 @@ use warnings;
 BEGIN { eval q{ use File::HomeDir::Test } }
 use Test::More;
 BEGIN { plan skip_all => 'borked' }
-BEGIN { plan skip_all => 'test requires Test::Clustericious::Config 0.26' unless eval q{ use Test::Clustericious::Config 0.26; 1 } }
-BEGIN { plan skip_all => 'test requires Test::Clustericious 0.9930' unless eval q{ use Test::Clustericious 0.9930; 1 } }
+BEGIN {
+  plan skip_all => 'test requires Clustericious 0.9941'
+    unless eval q{ use Clustericious 0.9941; 1};
+}
 use Test::PlugAuth;
 
 plan tests => 5;

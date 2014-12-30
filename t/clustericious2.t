@@ -4,7 +4,8 @@ eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 0.9931' unless eval q{ use Clustericious 0.9931; 1 };
+  plan skip_all => 'test requires Clustericious 0.9941'
+    unless eval q{ use Clustericious 0.9941; 1};
 }
 plan tests => 7;
 

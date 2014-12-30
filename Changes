@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Clustericious test cases run only with 0.9941 or better
+    this is the new combined Clustericious coming out tomorrow.
 
 0.17      2014-12-19 12:45:10 -0500
   - merge former optional dependency PlugAuth::Lite into this distribution

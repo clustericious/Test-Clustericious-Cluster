@@ -3,7 +3,8 @@ use warnings;
 use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
-  plan skip_all => 'test requires Test::Clustericious::Config' unless eval q{ use Test::Clustericious::Config; 1 };
+  plan skip_all => 'test requires Clustericious 0.9941'
+    unless eval q{ use Clustericious 0.9941; 1};
 }
 
 plan tests => 5;
