@@ -9,6 +9,15 @@ pod_spelling_system:
     - urls
     - FooApp
     - BarApp
+    - MyApp
+    - PlugAuth
+    - ua
+    - auth
+    - authz
+    - LDAP
+    - PlugAuthLite
+    - conf
+    - customizable
 
 pod_coverage:
   # format is "Class#method" or "Class", regex allowed
