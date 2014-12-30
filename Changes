@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.18      2014-12-30 00:02:32 -0500
   - Clustericious test cases run only with 0.9941 or better
     this is the new combined Clustericious coming out tomorrow.
 
