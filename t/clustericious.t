@@ -5,7 +5,12 @@ use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
   plan skip_all => 'test requires Clustericious 0.9941'
-    unless eval q{ use Clustericious 0.9941; 1};
+    unless eval q{
+      use Clustericious 0.9941;
+      use Clustericious::Config;
+      use Test::Clustericious::Config;
+      1;
+    };
 }
 
 plan tests => 15;
