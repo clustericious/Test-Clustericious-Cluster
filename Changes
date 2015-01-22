@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.19      2015-01-22 11:17:21 -0500
   - fixed borked tests if recent Clustericious is already installed.
 
 0.18      2014-12-30 00:02:32 -0500
