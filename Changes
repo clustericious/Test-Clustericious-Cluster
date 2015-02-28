@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Mojo 6.x compat
 
 0.19      2015-01-22 11:17:21 -0500
   - fixed borked tests if recent Clustericious is already installed.

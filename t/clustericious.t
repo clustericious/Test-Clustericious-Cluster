@@ -4,9 +4,9 @@ eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 0.9941'
+  plan skip_all => 'test requires Clustericious 0.9943'
     unless eval q{
-      use Clustericious 0.9941;
+      use Clustericious 0.9943;
       use Clustericious::Config;
       use Test::Clustericious::Config;
       1;

@@ -311,14 +311,14 @@ BEGIN {
 
     return $inc_hook->($self, $file) if $inc_hook;
    
-    state $loader;
-    unless(defined $loader)
+    state $first;
+    unless($first)
     {
-      $loader = Mojo::Loader->new;
-      $loader->load('main');
+      $first = 1;
+      Mojo::Loader::load_class('main');
     }
   
-    my $data = $loader->data('main', "lib/$file");
+    my $data = Mojo::Loader::data_section('main', "lib/$file");
     return unless defined $data;
     open my $fh, '<', \$data;
   
@@ -428,13 +428,12 @@ sub create_cluster_ok
   
   my $has_clustericious_config = 0;
   
-  my $loader = Mojo::Loader->new;
   my $caller = caller;
-  $loader->load($caller);
+  Mojo::Loader::load_class($caller);
 
   local $inc_hook = sub {
     my($self, $file) = @_;
-    my $data = $loader->data($caller, "lib/$file");
+    my $data = Mojo::Loader::data_section($caller, "lib/$file");
     return unless defined $data;
     open my $fh, '<', \$data;
     
@@ -457,9 +456,9 @@ sub create_cluster_ok
     my $cb;
     my $config = {};
     my $item = $_[$i];
-    if(ref($item) eq '' && $loader->data($caller, "etc/$item.conf"))
+    if(ref($item) eq '' && Mojo::Loader::data_section($caller, "etc/$item.conf"))
     {
-      $item = [ $item, $loader->data($caller, "etc/$item.conf") ];
+      $item = [ $item, Mojo::Loader::data_section($caller, "etc/$item.conf") ];
     }
 
     if(ref $item eq 'ARRAY')
@@ -537,7 +536,7 @@ sub create_cluster_ok
 
     unless(defined $app)
     {
-      if(my $script = $loader->data($caller, "script/$app_name"))
+      if(my $script = Mojo::Loader::data_section($caller, "script/$app_name"))
       {
         my $home = File::HomeDir->my_home;
         mkdir "$home/script" unless -d "$home/script";
