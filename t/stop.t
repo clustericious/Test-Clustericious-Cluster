@@ -9,7 +9,7 @@ use IO::Socket::INET;
 plan skip_all => 'cannot turn off Mojo IPv6'
   if IO::Socket::INET->isa('IO::Socket::IP');
 
-plan tests => 22;
+plan tests => 4;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(qw( MyApp MyApp MyApp ));
@@ -34,38 +34,55 @@ my @url = @{ $cluster->urls };
 #diag '';
 #diag '';
 
-$t->get_ok("$url[0]/foo")
-  ->status_is(200);
-$t->get_ok("$url[1]/foo")
-  ->status_is(200);
-$t->get_ok("$url[2]/foo")
-  ->status_is(200);
+subtest 'servers start as up' => sub {
+  plan tests => 6;
+  $t->get_ok("$url[0]/foo")
+    ->status_is(200);
+  $t->get_ok("$url[1]/foo")
+    ->status_is(200);
+  $t->get_ok("$url[2]/foo")
+    ->status_is(200);
+};
 
-$cluster->stop_ok(1);
+subtest 'stop middle server' => sub {
 
-$t->get_ok("$url[0]/foo")
-  ->status_is(200);
+  $cluster->stop_ok(1);
 
-my $tx = $t->ua->get("$url[1]/foo");
+  subtest 'left' => sub {
+    plan tests => 2;
+    $t->get_ok("$url[0]/foo")
+      ->status_is(200);
+  };
 
-ok !$tx->success, "GET $url[1]/foo [connection refused]";
-my $error = $tx->error->{message};
-my $code  = $tx->error->{code};
-ok $error, "error = $error";
-$code//='';
-ok !$code, "code  = $code";
+  subtest 'middle' => sub {
+    plan tests => 3;
+    my $tx = $t->ua->get("$url[1]/foo");
+    ok !$tx->success, "GET $url[1]/foo [connection refused]";
+    my $error = $tx->error->{message};
+    my $code  = $tx->error->{code};
+    ok $error, "error = $error";
+    $code//='';
+    ok !$code, "code  = $code";
+  };
 
-$t->get_ok("$url[2]/foo")
-  ->status_is(200);
+  subtest 'right' => sub {
+    plan tests => 2;
+    $t->get_ok("$url[2]/foo")
+      ->status_is(200);
+  };
+};
 
-$cluster->start_ok(1);
+subtest 'restart middle server' => sub {
+  plan tests => 7;
+  $cluster->start_ok(1);
 
-$t->get_ok("$url[0]/foo")
-  ->status_is(200);
-$t->get_ok("$url[1]/foo")
-  ->status_is(200);
-$t->get_ok("$url[2]/foo")
-  ->status_is(200);
+  $t->get_ok("$url[0]/foo")
+    ->status_is(200);
+  $t->get_ok("$url[1]/foo")
+    ->status_is(200);
+  $t->get_ok("$url[2]/foo")
+    ->status_is(200);
+};
 
 __DATA__
 
