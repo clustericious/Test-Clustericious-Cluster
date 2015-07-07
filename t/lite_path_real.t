@@ -3,9 +3,9 @@ use warnings;
 use Test::Clustericious::Cluster;
 use Test::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 0.9941'
+  plan skip_all => 'test requires Clustericious 1.00'
     unless eval q{
-      use Clustericious 0.9941;
+      use Clustericious 1.00;
       use Test::Clustericious::Config;
       1;
     };

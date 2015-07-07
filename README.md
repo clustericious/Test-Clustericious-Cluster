@@ -260,9 +260,9 @@ For example:
     use Test::More;
     BEGIN {
       plan skip_all => 'test requires Clustericious 0.9925'
-        unless eval q{ use Clustericious 0.9925; 1 };
+        unless eval q{ use Clustericious 1.00; 1 };
       plan skip_all => 'test requires PlugAuth::Lite'
-        unless eval q{ use PlugAuth::Lite; 1 };
+        unless eval q{ use PlugAuth::Lite 0.30; 1 };
     };
 
 ## stop\_ok
@@ -285,6 +285,20 @@ below on interactions with IPv6 or TLS/SSL.
 Start the given service.  The service is specified by 
 an index, the first application when you created the
 cluster is 0, the second is 1, and so on.
+
+## is\_stopped
+
+    $cluster->is_stopped( $index );
+    $cluster->is_stopped( $index, $test_name );
+
+Passes if the given service is stopped.
+
+## isnt\_stopped
+
+    $cluster->isnt_stopped( $index );
+    $cluster->isnt_stopped( $index, $test_name );
+
+Passes if the given service is not stopped.
 
 ## create\_ua
 

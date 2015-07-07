@@ -5,8 +5,8 @@ use Test::Clustericious::Cluster;
 use Test::More;
 use PlugAuth::Lite;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 0.9943'
-    unless eval q{ use Clustericious 0.9943; 1 };
+  plan skip_all => 'test requires Clustericious 1.00'
+    unless eval q{ use Clustericious 1.00; 1 };
 };
 plan tests => 12;
 

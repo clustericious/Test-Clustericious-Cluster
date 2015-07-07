@@ -617,9 +617,9 @@ For example:
  use Test::More;
  BEGIN {
    plan skip_all => 'test requires Clustericious 0.9925'
-     unless eval q{ use Clustericious 0.9925; 1 };
+     unless eval q{ use Clustericious 1.00; 1 };
    plan skip_all => 'test requires PlugAuth::Lite'
-     unless eval q{ use PlugAuth::Lite; 1 };
+     unless eval q{ use PlugAuth::Lite 0.30; 1 };
  };
 
 =cut
