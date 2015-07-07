@@ -27,7 +27,7 @@ subtest 'servers start as up' => sub {
 };
 
 subtest 'stop middle server' => sub {
-  plan tests => 5;
+  plan tests => 6;
 
   $cluster->stop_ok(1);
 
@@ -69,10 +69,17 @@ subtest 'stop middle server' => sub {
     $code//='';
     ok !$code, "code  = $code";
   };
+  
+  subtest 'is_stopped / isnt_stopped' => sub {
+    plan tests => 3;
+    $cluster->isnt_stopped(0);
+    $cluster->is_stopped(1);
+    $cluster->isnt_stopped(2);
+  };
 };
 
 subtest 'restart middle server' => sub {
-  plan tests => 7;
+  plan tests => 8;
   $cluster->start_ok(1);
 
   $t->get_ok("$url[0]/foo")
@@ -81,6 +88,18 @@ subtest 'restart middle server' => sub {
     ->status_is(200);
   $t->get_ok("$url[2]/foo")
     ->status_is(200);
+    
+  subtest 'with create_ua' => sub {
+    plan tests => 3;
+    my $ua = $cluster->create_ua;
+    
+    my $tx = $ua->get("$url[1]/foo");
+    
+    ok $tx->success, "GET $url[1]/foo SUCCESS";
+    #note $tx->res->to_string;
+    is $tx->res->code, 200, 'code == 200';
+    is $tx->res->body, 'bar1', 'body = bar1';
+  };
 };
 
 __DATA__

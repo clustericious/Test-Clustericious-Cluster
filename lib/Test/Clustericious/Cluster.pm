@@ -184,6 +184,7 @@ sub new
     t           => $t, 
     urls        => [], 
     apps        => [], 
+    stopped     => [],
     index       => -1,
     url         => '', 
     servers     => [],
@@ -377,6 +378,8 @@ sub _add_ua
   for(my $i=0; $i<=$max; $i++)
   {
     next unless defined $self->{apps}->[$i];
+    my $stopped = $self->{stopped}->[$i];
+    next if $stopped;
     $self->_add_app_to_ua($ua, $self->{urls}->[$i], $self->{apps}->[$i], $i);
   }
   push @{ $self->{extra_ua} }, $ua;
@@ -700,6 +703,8 @@ sub stop_ok
     $ok = 0;
   }
   
+  $self->{stopped}->[$index] = 1 if $ok;
+  
   $test_name //= "stop service ($index)";
   
   my $ret = $tb->ok($ok, $test_name);
@@ -746,8 +751,52 @@ sub start_ok
     $ok = 0;
   }
   
+  $self->{stopped}->[$index] = 0 if $ok;
+
   $test_name //= "start service ($index)";
   
+  $tb->ok($ok, $test_name);
+}
+
+=head2 is_stopped
+
+ $cluster->is_stopped( $index );
+ $cluster->is_stopped( $index, $test_name );
+
+Passes if the given service is stopped.
+
+=cut
+
+sub is_stopped
+{
+  my($self, $index, $test_name) = @_;
+  
+  my $ok = !!$self->{stopped}->[$index];
+  
+  $test_name //= "servers ($index) is stopped";
+  
+  my $tb = __PACKAGE__->builder;
+  $tb->ok($ok, $test_name);
+}
+
+=head2 isnt_stopped
+
+ $cluster->isnt_stopped( $index );
+ $cluster->isnt_stopped( $index, $test_name );
+
+Passes if the given service is not stopped.
+
+=cut
+
+sub isnt_stopped
+{
+  my($self, $index, $test_name) = @_;
+  
+  my $ok = !$self->{stopped}->[$index];
+  
+  $test_name //= "servers ($index) is not stopped";
+  
+  my $tb = __PACKAGE__->builder;
   $tb->ok($ok, $test_name);
 }
 
