@@ -16,24 +16,6 @@ $cluster->create_cluster_ok(qw( MyApp MyApp MyApp ));
 my $t = $cluster->t;
 my @url = @{ $cluster->urls };
 
-#diag '';
-#diag '';
-#diag '';
-#foreach my $module (sort keys %INC)
-#{
-#  my $path    = $INC{$module};
-#  if($module =~ s/\.pm//)
-#  {
-#    $module     =~ s/\//::/g;
-#  }
-#  my $version = eval qq{ no warnings; \$$module\::VERSION };
-#  $version    = '-' unless defined $version;
-#  diag sprintf("%40s %8s %s\n", $module, $version, $path);
-#}
-#diag '';
-#diag '';
-#diag '';
-
 subtest 'servers start as up' => sub {
   plan tests => 6;
   $t->get_ok("$url[0]/foo")
@@ -45,6 +27,7 @@ subtest 'servers start as up' => sub {
 };
 
 subtest 'stop middle server' => sub {
+  plan tests => 5;
 
   $cluster->stop_ok(1);
 
@@ -64,11 +47,27 @@ subtest 'stop middle server' => sub {
     $code//='';
     ok !$code, "code  = $code";
   };
-
+  
   subtest 'right' => sub {
     plan tests => 2;
     $t->get_ok("$url[2]/foo")
       ->status_is(200);
+  };
+  
+  subtest 'middle with new ua' => sub {
+    plan tests => 3;
+    
+    my $ua = $cluster->create_ua;
+    
+    my $tx = $ua->get("$url[1]/foo");
+    ok(!$tx->success, "GET $url[1]/foo [connection refused]") || diag $tx->res->to_string;
+    
+    my $error = eval { $tx->error->{message} };
+    my $code  = eval { $tx->error->{code} };
+    $error//='';
+    ok $error, "error = $error";
+    $code//='';
+    ok !$code, "code  = $code";
   };
 };
 
