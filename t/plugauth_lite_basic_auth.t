@@ -24,14 +24,14 @@ $t->get_ok('/')
 
 my $port = eval { $t->ua->server->url->port } // $t->ua->app_url->port;
 
-$t->get_ok("http://localhost:$port/auth")
+$t->get_ok("http://127.0.0.1:$port/auth")
   ->status_is(401)
   ->content_like(qr[authenticate], 'got authenticate header');
 
-$t->get_ok("http://foo:bar\@localhost:$port/auth")
+$t->get_ok("http://foo:bar\@127.0.0.1:$port/auth")
   ->status_is(200)
   ->content_is('ok', 'auth succeeded');
 
-$t->get_ok("http://foo:foo\@localhost:$port/auth")
+$t->get_ok("http://foo:foo\@127.0.0.1:$port/auth")
   ->status_is(403)
   ->content_is('not ok', 'auth failed');
