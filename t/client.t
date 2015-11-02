@@ -7,12 +7,14 @@ BEGIN {
   plan skip_all => 'test requires Clustericious 1.00'
     unless eval q{ 
       use Clustericious 1.00;
-      use Clustericious::Client;
-      use Test::Clustericious::Config;
       1;
     };
 }
+use Clustericious::Client;
+use Test::Clustericious::Config;
 
+plan skip_all => 'test requires Clustericious::Client 1.01'
+  unless Clustericious::Client->can('_mojo_user_agent_factory');
 plan tests => 6;
 
 my $cluster = Test::Clustericious::Cluster->new;
