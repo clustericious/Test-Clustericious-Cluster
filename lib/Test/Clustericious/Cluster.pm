@@ -590,6 +590,17 @@ sub create_cluster_ok
   $tb->ok(@errors == 0, "created cluster");
   $tb->diag("exception: " . $_->[0] . ': ' . $_->[1]) for @errors;
   
+  if($INC{'Clustericious/App.pm'})
+  {
+    require Clustericious::Client;
+    if(Clustericious::Client->can('_mojo_user_agent_factory'))
+    {
+      Clustericious::Client->_mojo_user_agent_factory(sub {
+        $self->create_ua;
+      });
+    }
+  }
+  
   return $self;
 }
 

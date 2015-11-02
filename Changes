@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Hook into Clustericious::Client if app is a Clustericious service
+    on Clustericious 1.01 or better
 
 0.21      2015-07-07 11:27:22 -0400
   - Track stops / starts
