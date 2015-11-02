@@ -27,7 +27,6 @@ use_ok 'MyApp::Client';
 my $client = eval { MyApp::Client->new };
 diag $@ if $@;
 isa_ok $client, 'MyApp::Client';
-$client->client($cluster->t->ua);
 
 is $client->welcome, 'welcome', 'welcome returns welcome';
 is $client->version->[0], '1.00', 'version = 1.00';
@@ -39,6 +38,7 @@ package MyApp;
 
 use Mojo::JSON qw( encode_json );
 use Mojo::Base qw( Mojolicious );
+use Clustericious::App ();
 
 sub startup
 {
@@ -57,4 +57,9 @@ sub startup
 package MyApp::Client;
 use Clustericious::Client;
 route welcome => 'GET', '/';
+1;
+
+
+@@ lib/Clustericious/App.pm
+package Clustericious::App;
 1;
