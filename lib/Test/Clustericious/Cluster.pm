@@ -43,7 +43,7 @@ use Carp qw( croak );
  @@ etc/MyApp1.conf
  ---
  # Clustericious configuration 
- url <%= cluster->url %>
+ url: <%= cluster->url %>
  url_for_my_app2: <%= cluster->urls->[1] %>
 
 =head1 DESCRIPTION
