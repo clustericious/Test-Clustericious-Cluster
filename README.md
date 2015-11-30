@@ -307,6 +307,13 @@ Passes if the given service is not stopped.
 Create a new instance of Mojo::UserAgent which can be used
 to connect to nodes in the test cluster.
 
+## extract\_data\_section
+
+    $cluster->extract_data_section($regex);
+
+Extract the files from the data section of the current package
+that match the given regex.
+
 # CAVEATS
 
 Some combination of Mojolicious, FreeBSD, IPv6 and TLS/SSL

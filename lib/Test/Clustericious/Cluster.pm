@@ -19,6 +19,8 @@ use Mojo::Loader;
 use Mojo::UserAgent;
 use base qw( Test::Builder::Module );
 use Carp qw( croak );
+use File::Basename ();
+use File::Path ();
 
 # ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
 # VERSION
@@ -823,6 +825,43 @@ to connect to nodes in the test cluster.
 sub create_ua
 {
   shift->_add_ua;
+}
+
+=head2 extract_data_section
+
+ $cluster->extract_data_section($regex);
+
+Extract the files from the data section of the current package
+that match the given regex.
+
+=cut
+
+sub extract_data_section
+{
+  my($self, $regex) = @_;
+
+  $regex //= qr{};
+  my $caller = caller;
+  my $all = Mojo::Loader::data_section $caller;
+  my $home = File::HomeDir->my_home;
+  my $tb = __PACKAGE__->builder;
+
+  foreach my $name (keys %$all)
+  {
+    use autodie;
+    next unless $name =~ $regex;
+    my $basename = File::Basename::basename $name;
+    my $dir      = File::Basename::dirname  $name;
+
+    $tb->note("[extract] DIR  $home/dir");
+    File::Path::mkpath "$home/$dir", 0, 0700;
+    $tb->note("[extract] FILE $home/$dir/$basename");
+    open my $fh, '>', "$home/$dir/$basename";
+    print $fh $all->{$name};
+    close $fh;
+  }
+  
+  $self;
 }
 
 1;
