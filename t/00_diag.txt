@@ -1,7 +1,8 @@
 Clustericious
 EV
+ExtUtils::MakeMaker
 File::HomeDir
-Module::Build
 Mojolicious
 PlugAuth
+Test::Builder::Module
 Test::More
