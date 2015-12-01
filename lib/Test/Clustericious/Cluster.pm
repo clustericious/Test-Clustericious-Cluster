@@ -536,7 +536,7 @@ sub create_cluster_ok
         }
         $app_name->new(\$config);
       };
-      my $first_try_error = $@;
+      $first_try_error = $@;
     }
 
     unless(defined $app)
