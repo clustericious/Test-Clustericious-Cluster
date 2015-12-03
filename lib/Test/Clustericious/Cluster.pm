@@ -438,7 +438,6 @@ sub create_cluster_ok
   Mojo::Loader::load_class($caller);
 
   local @INC = @INC;
-  $DB::single = 1;
   $self->extract_data_section(qr{^lib/}, $caller);
   my $home = File::HomeDir->my_home;
   unshift @INC, "$home/lib"
