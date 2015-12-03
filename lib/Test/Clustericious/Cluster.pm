@@ -853,7 +853,7 @@ sub extract_data_section
     my $basename = File::Basename::basename $name;
     my $dir      = File::Basename::dirname  $name;
 
-    $tb->note("[extract] DIR  $home/dir");
+    $tb->note("[extract] DIR  $home/$dir");
     File::Path::mkpath "$home/$dir", 0, 0700;
     $tb->note("[extract] FILE $home/$dir/$basename");
     open my $fh, '>', "$home/$dir/$basename";
