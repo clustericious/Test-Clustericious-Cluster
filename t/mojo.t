@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use 5.010001;
 use Test::Clustericious::Cluster;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(
@@ -18,6 +18,10 @@ $t->get_ok($cluster->urls->[0])
 $t->get_ok($cluster->urls->[1])
   ->status_is(200)
   ->content_is('Bar');
+
+# make sure autoextraction worked
+like $INC{'Foo.pm'}, qr{/lib/Foo\.pm$}, "Foo.pm looks like it was read from a real placew";
+ok   -f $INC{'Foo.pm'},                 "Foo.pm is a real file";
 
 __DATA__
 

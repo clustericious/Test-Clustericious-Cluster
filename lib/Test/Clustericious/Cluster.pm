@@ -18,7 +18,7 @@ use Test::Mojo;
 use Mojo::Loader;
 use Mojo::UserAgent;
 use base qw( Test::Builder::Module );
-use Carp qw( croak );
+use Carp qw( croak carp );
 use File::Basename ();
 use File::Path ();
 
@@ -306,20 +306,21 @@ not be used for non-L<Clustericious> L<Mojolicious> applications.
 
 =cut
 
-our $inc_hook;
-
 BEGIN {
+  # TODO
+  # so we muck with this @INC in two places.  Here we do it so
+  # that you can use_ok files in your .t file.  Later we do 
+  # extract files in create_cluster_ok and add ~/lib to the @INC
+  # path so that we can load as regular files.  This is more
+  # reliable for anything that expects a real live file, and we'd
+  # like to do that for use_ok as well in the future.
+
   unshift @INC, sub {
     my($self, $file) = @_;
 
-    return $inc_hook->($self, $file) if $inc_hook;
-   
+    # avoid deep recursion
     state $first;
-    unless($first)
-    {
-      $first = 1;
-      Mojo::Loader::load_class('main');
-    }
+    Mojo::Loader::load_class('main') unless $first++;
   
     my $data = Mojo::Loader::data_section('main', "lib/$file");
     return unless defined $data;
@@ -436,22 +437,13 @@ sub create_cluster_ok
   my $caller = caller;
   Mojo::Loader::load_class($caller);
 
-  local $inc_hook = sub {
-    my($self, $file) = @_;
-    my $data = Mojo::Loader::data_section($caller, "lib/$file");
-    return unless defined $data;
-    open my $fh, '<', \$data;
-    
-    # fake out %INC because Mojo::Home freeks the heck
-    # out when it sees a CODEREF on some platforms
-    # in %INC
-    my $home = File::HomeDir->my_home;
-    mkdir "$home/mojohome" unless -d "$home/mojohome";
-    $INC{$file} = "$home/mojohome/$file";
-    
-    return $fh;
-  };
-  
+  local @INC = @INC;
+  $DB::single = 1;
+  $self->extract_data_section(qr{^lib/}, $caller);
+  my $home = File::HomeDir->my_home;
+  unshift @INC, "$home/lib"
+    if -d "$home/lib";
+
   foreach my $i (0..$#_)
   {
     $self->{index}++;
@@ -838,10 +830,10 @@ that match the given regex.
 
 sub extract_data_section
 {
-  my($self, $regex) = @_;
+  my($class, $regex, $caller) = @_;
 
   $regex //= qr{};
-  my $caller = caller;
+  $caller //= caller;
   my $all = Mojo::Loader::data_section $caller;
   my $home = File::HomeDir->my_home;
   my $tb = __PACKAGE__->builder;
@@ -853,15 +845,21 @@ sub extract_data_section
     my $basename = File::Basename::basename $name;
     my $dir      = File::Basename::dirname  $name;
 
-    $tb->note("[extract] DIR  $home/$dir");
-    File::Path::mkpath "$home/$dir", 0, 0700;
-    $tb->note("[extract] FILE $home/$dir/$basename");
-    open my $fh, '>', "$home/$dir/$basename";
-    print $fh $all->{$name};
-    close $fh;
+    unless(-d "$home/$dir")
+    {
+      $tb->note("[extract] DIR  $home/$dir");
+      File::Path::mkpath "$home/$dir", 0, 0700;
+    }
+    unless(-f "$home/$dir/$basename")
+    {
+      $tb->note("[extract] FILE $home/$dir/$basename");
+      open my $fh, '>', "$home/$dir/$basename";
+      print $fh $all->{$name};
+      close $fh;
+    }
   }
   
-  $self;
+  $class;
 }
 
 1;

@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Auto extract lib/* from data section during create_cluster_ok
+    (we may do this outside of create_cluster_ok in the future)
 
 0.25      2015-12-01 06:56:07 -0500
   - Fixed bug where create_cluster_ok not always catching failure on
