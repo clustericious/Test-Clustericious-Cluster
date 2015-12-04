@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix skip logic in test t/clustericious_config_with_colon.t
 
 0.27      2015-12-04 09:41:10 -0500
   - Fix bug where an app name with colons was looking for
