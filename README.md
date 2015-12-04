@@ -319,7 +319,8 @@ to connect to nodes in the test cluster.
     Test::Clustericious::Cluster->extract_data_section($regex);
 
 Extract the files from the data section of the current package
-that match the given regex.
+that match the given regex.  `$regex` can also be a plain
+string for an exact filename match.
 
 # CAVEATS
 
