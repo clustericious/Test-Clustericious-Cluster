@@ -167,6 +167,7 @@ sub new
   {
     # undocumented and deprecated
     # you can pass in just an instance of Test::Mojo
+    carp "passing a Test::Mojo object into Test::Clustericious::Cluster->new deprecated";
     $args = { t => $_[0] };
   }
   else
