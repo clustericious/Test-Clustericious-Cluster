@@ -481,9 +481,15 @@ sub create_cluster_ok
     my $cb;
     my $config = {};
     my $item = $_[$i];
-    if(ref($item) eq '' && Mojo::Loader::data_section($caller, "etc/$item.conf"))
+    unless(ref $item)
     {
-      $item = [ $item, Mojo::Loader::data_section($caller, "etc/$item.conf") ];
+      my $fn = $item;
+      $fn =~ s{::}{-}g;
+      $fn = "etc/$fn.conf";
+      if(Mojo::Loader::data_section($caller, $fn))
+      {
+        $item = [ $item, Mojo::Loader::data_section($caller, $fn) ];
+      }
     }
 
     if(ref $item eq 'ARRAY')
@@ -493,7 +499,11 @@ sub create_cluster_ok
       {
         my $home = File::HomeDir->my_home;
         mkdir "$home/etc" unless -d "$home/etc";
-        open my $fh, '>', "$home/etc/$app_name.conf";
+        open my $fh, '>', do {
+          my $fn = $app_name;
+          $fn =~ s{::}{-}g;
+          $fn = "$home/etc/$fn.conf";
+        };
         print $fh $config;
         close $fh;
         $config = {};

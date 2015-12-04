@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fix bug where an app name with colons was looking for
+    config in with the wrong name.  Note the config filename
+    for app Foo::Bar is actually etc/Foo-Bar.conf.  This is
+    because : is not legal in filenames on some platforms.
 
 0.26      2015-12-04 08:03:53 -0500
   - Add support for testing PSGI apps
