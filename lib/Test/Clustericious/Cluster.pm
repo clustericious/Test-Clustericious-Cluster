@@ -14,7 +14,6 @@ BEGIN {
 
 use File::HomeDir;
 use Mojo::URL;
-use Test::Mojo;
 use Mojo::Loader;
 use Mojo::UserAgent;
 use base qw( Test::Builder::Module );
@@ -175,8 +174,6 @@ sub new
     $args = ref $_[0] ? { %{ $_[0] } } : {@_};
   }
 
-  my $t = $args->{t} // Test::Mojo->new;
-  
   my $sep = $^O eq 'MSWin32' ? ';' : ':';
   my $lite_path = [ split $sep, $ENV{PATH} ];
 
@@ -184,7 +181,7 @@ sub new
   unshift @$lite_path, ref($args->{lite_path}) ? @{ $args->{lite_path} } : ($args->{lite_path});
   
   bless { 
-    t           => $t, 
+    #t           => $t, 
     urls        => [], 
     apps        => [], 
     stopped     => [],
@@ -193,7 +190,7 @@ sub new
     servers     => [],
     app_servers => [],
     auth_url    => '',
-    extra_ua    => [$t->ua],
+    #extra_ua    => [$t->ua],
     lite_path   => $lite_path,
   }, $class;
 }
@@ -208,7 +205,18 @@ The instance of Test::Mojo used in testing.
 
 =cut
 
-sub t { shift->{t} }
+sub t {
+  my($self) = @_;
+  $self->{t} //= do {
+    require Test::Mojo;
+    Test::Mojo->new;
+  };
+}
+
+sub _extra_ua {
+  my($self) = @_;
+  $self->{extra_ua} //= [ $self->t->ua ];
+}
 
 =head2 urls
 
@@ -375,7 +383,7 @@ sub _add_app_to_ua
 sub _add_app
 {
   my($self, $url, $app, $index) = @_;
-  $self->_add_app_to_ua($_, $url, $app, $index) for @{ $self->{extra_ua} };
+  $self->_add_app_to_ua($_, $url, $app, $index) for @{ $self->_extra_ua };
   return;
 }
 
@@ -397,7 +405,7 @@ sub _add_ua
     next if $stopped;
     $self->_add_app_to_ua($ua, $self->{urls}->[$i], $self->{apps}->[$i], $i);
   }
-  push @{ $self->{extra_ua} }, $ua;
+  push @{ $self->_extra_ua }, $ua;
   return $ua;
 }
 
