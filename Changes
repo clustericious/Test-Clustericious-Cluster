@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.27      2015-12-04 09:41:10 -0500
   - Fix bug where an app name with colons was looking for
     config in with the wrong name.  Note the config filename
     for app Foo::Bar is actually etc/Foo-Bar.conf.  This is
