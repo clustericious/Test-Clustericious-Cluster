@@ -286,6 +286,12 @@ lite application.  The script for the lite app must be executable.
 You can specify additional directories to search using the
 C<lite_path> argument to the constructor.
 
+This can also be a PSGI application.  In this case it needs to be
+in the C<__DATA__> section of your test and it must have a name
+in the form C<script/app.psgi>.  This also requires
+L<Mojolicious::Plugin::MountPSGI> already be installed so if you
+use this feature make sure you declare that as a prereq.
+
 =item list reference in the form: [ string, hashref ]
 
 The string is taken to be the L<Mojolicious> application name.
@@ -324,14 +330,19 @@ BEGIN {
   
     my $data = Mojo::Loader::data_section('main', "lib/$file");
     return unless defined $data;
+    
+    # This will make the file really there.
+    # Some stuff depends on that
+    __PACKAGE__->extract_data_section("lib/$file", 'main');
+
     open my $fh, '<', \$data;
   
     # fake out %INC because Mojo::Home freeks the heck
     # out when it sees a CODEREF on some platforms
     # in %INC
     my $home = File::HomeDir->my_home;
-    mkdir "$home/mojohome" unless -d "$home/mojohome";
-    $INC{$file} = "$home/mojohome/$file";
+    mkdir "$home/lib" unless -d "$home/lib";
+    $INC{$file} = "$home/lib/$file";
   
     return $fh;
   };
@@ -539,6 +550,17 @@ sub create_cluster_ok
         $app = _load_lite_app("$home/script/$app_name", $script);
         if(my $error = $@)
         { push @errors, [ $app_name, $error ] }
+      }
+      
+      if(my $script = Mojo::Loader::data_section($caller, "script/$app_name.psgi"))
+      {
+        my $home = File::HomeDir->my_home;
+        require Mojolicious;
+        require Mojolicious::Plugin::MountPSGI;
+        $app = Mojolicious->new;
+        # TODO: check syntax of .psgi file?
+        $self->extract_data_section("script/$app_name.psgi", $caller);
+        $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$home/script/$app_name.psgi" });
       }
     }
     
@@ -821,9 +843,11 @@ sub create_ua
 =head2 extract_data_section
 
  $cluster->extract_data_section($regex);
+ Test::Clustericious::Cluster->extract_data_section($regex);
 
 Extract the files from the data section of the current package
-that match the given regex.
+that match the given regex.  C<$regex> can also be a plain
+string for an exact filename match.
 
 =cut
 
@@ -832,6 +856,13 @@ sub extract_data_section
   my($class, $regex, $caller) = @_;
 
   $regex //= qr{};
+  
+  unless(ref $regex eq 'Regexp')
+  {
+    $regex = quotemeta $regex;
+    $regex = qr{^$regex$};
+  }
+  
   $caller //= caller;
   my $all = Mojo::Loader::data_section $caller;
   my $home = File::HomeDir->my_home;

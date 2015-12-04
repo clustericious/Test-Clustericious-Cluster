@@ -220,6 +220,12 @@ Each element in the services array may be either
     You can specify additional directories to search using the
     `lite_path` argument to the constructor.
 
+    This can also be a PSGI application.  In this case it needs to be
+    in the `__DATA__` section of your test and it must have a name
+    in the form `script/app.psgi`.  This also requires
+    [Mojolicious::Plugin::MountPSGI](https://metacpan.org/pod/Mojolicious::Plugin::MountPSGI) already be installed so if you
+    use this feature make sure you declare that as a prereq.
+
 - list reference in the form: \[ string, hashref \]
 
     The string is taken to be the [Mojolicious](https://metacpan.org/pod/Mojolicious) application name.
@@ -310,6 +316,7 @@ to connect to nodes in the test cluster.
 ## extract\_data\_section
 
     $cluster->extract_data_section($regex);
+    Test::Clustericious::Cluster->extract_data_section($regex);
 
 Extract the files from the data section of the current package
 that match the given regex.

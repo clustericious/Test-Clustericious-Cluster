@@ -1,6 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add support for testing PSGI apps
+    requires Mojolicious::Plugin::MountPSGI
+  - extract_data_section can take a plain string for
+    an exact match of one file.
   - Auto extract lib/* from data section during create_cluster_ok
     (we may do this outside of create_cluster_ok in the future)
 
