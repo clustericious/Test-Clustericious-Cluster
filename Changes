@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.26      2015-12-04 08:03:53 -0500
   - Add support for testing PSGI apps
     this requires Mojolicious::Plugin::MountPSGI
   - extract_data_section can take a plain string for
