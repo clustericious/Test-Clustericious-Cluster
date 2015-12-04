@@ -2,11 +2,18 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Add support for testing PSGI apps
-    requires Mojolicious::Plugin::MountPSGI
+    this requires Mojolicious::Plugin::MountPSGI
   - extract_data_section can take a plain string for
     an exact match of one file.
+  - extract_data_section can be called as a class method
+    (this was already the case, but it is documented/supported now)
   - Auto extract lib/* from data section during create_cluster_ok
-    (we may do this outside of create_cluster_ok in the future)
+    (we may auto extract lib/... and script/... files in the future
+     as necessary)
+  - Default to the last service for $cluster->t testing
+    (ie $cluster->t->get_ok('/foo') should work instead of needing
+        $cluster->t->get_ok("$url/foo") for single service clusters)
+    This Feature should be considered experimental
 
 0.25      2015-12-01 06:56:07 -0500
   - Fixed bug where create_cluster_ok not always catching failure on

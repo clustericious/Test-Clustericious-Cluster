@@ -9,7 +9,7 @@ use IO::Socket::INET;
 plan skip_all => 'cannot turn off Mojo IPv6'
   if IO::Socket::INET->isa('IO::Socket::IP');
 
-plan tests => 4;
+plan tests => 5;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(qw( MyApp MyApp MyApp ));
@@ -99,6 +99,42 @@ subtest 'restart middle server' => sub {
     #note $tx->res->to_string;
     is $tx->res->code, 200, 'code == 200';
     is $tx->res->body, 'bar1', 'body = bar1';
+  };
+};
+
+subtest 'stop end server using relative url' => sub {
+
+  subtest 'get before stop' => sub {
+    plan tests => 4;
+    $t->get_ok('/foo')
+      ->status_is(200)
+      ->content_is('bar2');
+    ok $t->ua->server->app;
+  };
+
+  $cluster->stop_ok(2);
+
+  subtest 'get after stop' => sub {
+    plan tests => 1;
+    ok !$t->ua->server->app;
+
+    # we can test this but it times out
+    # and it issues warnings that are 
+    # messy, so just heck that the app
+    # object above is bad.
+    #my $ua = $t->ua;
+    #my $tx = $ua->get("/foo");
+    #ok !$tx->success, 'not successful';
+  };
+  
+  $cluster->start_ok(2);
+
+  subtest 'get before stop' => sub {
+    plan tests => 4;
+    $t->get_ok('/foo')
+      ->status_is(200)
+      ->content_is('bar2');
+    ok $t->ua->server->app;
   };
 };
 

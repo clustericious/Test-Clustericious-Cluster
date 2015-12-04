@@ -209,8 +209,17 @@ sub t {
   my($self) = @_;
   $self->{t} //= do {
     require Test::Mojo;
-    Test::Mojo->new;
+    my $t = $self->{t} = Test::Mojo->new;
+    $self->_update_default_server;
+    $t;
   };
+}
+
+sub _update_default_server
+{
+  my($self) = @_;
+  $self->t->ua->server->app($self->apps->[-1])
+    if $self->{t} && @{ $self->apps } && !$self->{stopped}->[-1];
 }
 
 sub _extra_ua {
@@ -625,6 +634,11 @@ sub create_cluster_ok
     }
   }
   
+  if(defined $self->{t})
+  {
+    $self->_update_default_server;
+  }
+  
   return $self;
 }
 
@@ -731,6 +745,12 @@ sub stop_ok
     eval { @{ $self->{app_servers}->[$index] } = () };
     $error = $@;
     $ok = 0 if $error;
+    
+    if($index == $#{ $self->apps } && $self->{t})
+    {
+      $self->t->ua->server(Mojo::UserAgent::Server->new);
+    }
+    
   }
   else
   {
@@ -779,6 +799,7 @@ sub start_ok
       $tb->diag("error in start: $error");
       $ok = 0;
     }
+
   }
   else
   {
@@ -787,6 +808,11 @@ sub start_ok
   }
   
   $self->{stopped}->[$index] = 0 if $ok;
+
+  if($index == $#{ $self->apps } && $self->{t})
+  {
+    $self->_update_default_server;
+  }
 
   $test_name //= "start service ($index)";
   
