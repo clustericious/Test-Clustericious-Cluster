@@ -3,7 +3,7 @@ use warnings;
 use Test::Clustericious::Cluster;
 use Test::More;
 
-plan skip_all => 'test requires Dancer2 and Mojolicious::Plugin::MountPSGI: ' . $@
+plan skip_all => 'test requires Dancer2 and Mojolicious::Plugin::MountPSGI'
   unless eval q{ use Dancer2 (); use Mojolicious::Plugin::MountPSGI (); 1 };
 plan tests => 4;
 

@@ -18,6 +18,8 @@ pod_spelling_system:
     - PlugAuthLite
     - conf
     - customizable
+    - app
+    - apps
 
 pod_coverage:
   # format is "Class#method" or "Class", regex allowed
