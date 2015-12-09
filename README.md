@@ -1,4 +1,4 @@
-# Test::Clustericious::Cluster [![Build Status](https://secure.travis-ci.org/plicease/Test-Clustericious-Cluster.png)](http://travis-ci.org/plicease/Test-Clustericious-Cluster)
+# Test::Clustericious::Cluster [![Build Status](https://secure.travis-ci.org/clustericious/Test-Clustericious-Cluster.png)](http://travis-ci.org/clustericious/Test-Clustericious-Cluster)
 
 Test an imaginary beowulf cluster of Clustericious services
 
