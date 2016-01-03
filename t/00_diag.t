@@ -19,7 +19,6 @@ $modules{$_} = $_ for qw(
   PlugAuth
   Test::Builder::Module
   Test::More
-  YAML::XS
 );
 
 

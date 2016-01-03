@@ -1,8 +1,0 @@
-Clustericious
-EV
-ExtUtils::MakeMaker
-File::HomeDir
-Mojolicious
-PlugAuth
-Test::Builder::Module
-Test::More
