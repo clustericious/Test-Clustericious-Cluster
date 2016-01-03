@@ -19,6 +19,8 @@ foreach my $index (0..2)
     isa_ok $client, 'Clustericious::Client';
     isa_ok $client, 'Foo::Client';
     is $client->config->url, $cluster->urls->[$index], "client.config.url correct @{[ $cluster->urls->[$index] ]}";
+    
+    is $client->welcome, 'willkommen', 'client.welcome';
   };
 }
 
