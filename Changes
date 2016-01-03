@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.29      2016-01-03 10:35:00 -0500
   - Can now test a ::Client without creating a .conf file
   - Can now get a client object for each app
 
