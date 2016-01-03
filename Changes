@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Can now test a ::Client without creating a .conf file
 
 0.28      2015-12-04 11:34:38 -0500
   - Fix skip logic in test t/clustericious_config_with_colon.t

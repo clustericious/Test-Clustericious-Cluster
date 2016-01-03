@@ -626,6 +626,25 @@ sub create_cluster_ok
       });
     }
 
+    if($app && $app->isa('Clustericious::App'))
+    {
+      my $fn = $app_name;
+      $fn =~ s{::}{-}g;
+      $fn = "$home/etc/$fn.conf";
+      unless(-e $fn)
+      {
+        # YAML::XS is a prereq for Clustericious
+        # so we can use it here.
+        require YAML::XS;
+        my %config = %{ $app->config };
+        $config{url} //= $self->url->to_string;
+        my $payload = YAML::XS::Dump(\%config);
+        open my $fh, '>', $fn;
+        print $fh $payload;
+        close $fh;
+      }
+    }
+
     $cb->() if defined $cb;
   }
 
