@@ -322,6 +322,17 @@ Extract the files from the data section of the current package
 that match the given regex.  `$regex` can also be a plain
 string for an exact filename match.
 
+## client
+
+    my $client = $cluster->client($n);
+
+Return a [Clustericious::Client](https://metacpan.org/pod/Clustericious::Client) object for use with the `$n`th
+service in the cluster.  If there is a corresponding `YourService::Client`
+class then it will be used.  Otherwise you will get a generic
+[Clustericious::Client](https://metacpan.org/pod/Clustericious::Client) object with the correct URL configured.
+
+This method only works with [Clustericious](https://metacpan.org/pod/Clustericious) services.
+
 # CAVEATS
 
 Some combination of Mojolicious, FreeBSD, IPv6 and TLS/SSL

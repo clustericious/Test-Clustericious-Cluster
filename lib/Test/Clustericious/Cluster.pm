@@ -956,6 +956,35 @@ sub extract_data_section
   $class;
 }
 
+=head2 client
+
+ my $client = $cluster->client($n);
+
+Return a L<Clustericious::Client> object for use with the C<$n>th
+service in the cluster.  If there is a corresponding C<YourService::Client>
+class then it will be used.  Otherwise you will get a generic
+L<Clustericious::Client> object with the correct URL configured.
+
+This method only works with L<Clustericious> services.
+
+=cut
+
+sub client
+{
+  my($self, $n) = @_;
+  my $app = $self->apps->[$n];
+  return unless eval { $app->isa('Clustericious::App') };
+  my $client_class = ref($app) . '::Client';
+  unless($client_class->can('new') || eval qq{ require $client_class; $client_class->isa('Clustericious::Client') })
+  {
+    require Clustericious::Client;
+    $client_class = 'Clustericious::Client';
+  }
+  my %config = %{ $app->config };
+  $config{url} = $self->urls->[$n];
+  my $client = $client_class->new( config => Clustericious::Config->new(\%config) );
+}
+
 1;
 
 =head1 CAVEATS
