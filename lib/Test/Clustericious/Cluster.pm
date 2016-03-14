@@ -619,11 +619,14 @@ sub create_cluster_ok
     
     if(eval { $app->isa('Clustericious::App') })
     {
-      $app->helper(auth_ua => sub { 
-        die "no plug auth service configured for test cluster, either turn off authentication or use Test::Clustericious::Cluster#create_plugauth_lite_ok"
-          unless defined $self->{auth_ua};
-        $self->{auth_ua};
-      });
+      if($app->can('auth_ua'))
+      {
+        $app->helper(auth_ua => sub { 
+          die "no plug auth service configured for test cluster, either turn off authentication or use Test::Clustericious::Cluster#create_plugauth_lite_ok"
+            unless defined $self->{auth_ua};
+          $self->{auth_ua};
+        });
+      }
     }
 
     if($app && $app->isa('Clustericious::App'))
