@@ -342,10 +342,6 @@ BEGIN {
   unshift @INC, sub {
     my($self, $file) = @_;
 
-    # avoid deep recursion
-    state $first;
-    Mojo::Loader::load_class('main') unless $first++;
-  
     my $data = Mojo::Loader::data_section('main', "lib/$file");
     return unless defined $data;
     
@@ -464,7 +460,7 @@ sub create_cluster_ok
   my $has_clustericious_config = 0;
   
   my $caller = caller;
-  Mojo::Loader::load_class($caller);
+  Mojo::Loader::load_class($caller) if $caller ne 'main';
 
   local @INC = @INC;
   $self->extract_data_section(qr{^lib/}, $caller);
