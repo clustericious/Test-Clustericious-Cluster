@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.31      2016-04-22 13:36:21 -0400
+  - Mojolicious 6.58 compatability
+
 0.30      2016-03-14 12:21:55 -0400
   - Clustericious 1.17 compatability
 
