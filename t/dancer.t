@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 
-plan skip_all => 'test requires Dancer2 and Mojolicious::Plugin::MountPSGI'
+skip_all 'test requires Dancer2 and Mojolicious::Plugin::MountPSGI'
   unless eval q{ use Dancer2 (); use Mojolicious::Plugin::MountPSGI (); 1 };
-plan tests => 4;
+plan 4;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok('myapp');

@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test2::Bundle::More;
 use Test::Mojo;
-
 use Mojolicious::Lite;
+
+plan 10;
 
 plugin 'plug_auth_lite', auth => sub { 1 }, url => "/foo/bar/baz";
 

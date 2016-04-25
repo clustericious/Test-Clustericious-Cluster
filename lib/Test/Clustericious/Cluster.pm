@@ -4,20 +4,22 @@ use strict;
 use warnings;
 use 5.010001;
 use if !$INC{'File/HomeDir/Test.pm'}, 'File::HomeDir::Test';
+use Test2::API qw( context );
 use File::HomeDir;
 use Mojo::URL;
 use Mojo::Loader;
 use Mojo::UserAgent;
-use base qw( Test::Builder::Module );
 use Carp qw( croak carp );
 use File::Basename ();
 use File::Path ();
+use Test::Mojo;
 
 # ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
 # VERSION
 
 =head1 SYNOPSIS
 
+ use Test2::Bundle::More;
  use Test::Clustericious::Cluster;
  
  # suppose MyApp1 isa Clustericious::App and
@@ -30,6 +32,8 @@ use File::Path ();
  
  $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
  $t->get_ok("$url[1]/another_path");    # tests against MyApp2
+ 
+ done_testing;
  
  __DATA__
  
@@ -200,7 +204,6 @@ The instance of Test::Mojo used in testing.
 sub t {
   my($self) = @_;
   $self->{t} //= do {
-    require Test::Mojo;
     my $t = $self->{t} = Test::Mojo->new;
     $self->_update_default_server;
     $t;
@@ -473,6 +476,7 @@ sub create_cluster_ok
   my $self = shift;
 
   $self->_create_config_helper;
+  my $ctx = context();
   
   my $total = scalar @_;
   my @urls = map { 
@@ -651,9 +655,8 @@ sub create_cluster_ok
     $cb->() if defined $cb;
   }
 
-  my $tb = __PACKAGE__->builder;
-  $tb->ok(@errors == 0, "created cluster");
-  $tb->diag("exception: " . $_->[0] . ': ' . $_->[1]) for @errors;
+  $ctx->ok(@errors == 0, "created cluster");
+  $ctx->diag("exception: " . $_->[0] . ': ' . $_->[1]) for @errors;
   
   if($INC{'Clustericious/App.pm'})
   {
@@ -671,6 +674,7 @@ sub create_cluster_ok
     $self->_update_default_server;
   }
   
+  $ctx->release;
   return $self;
 }
 
@@ -695,11 +699,11 @@ For example:
  use strict;
  use warnings;
  use Test::Clustericious::Cluster;
- use Test::More;
+ use Test2::Bundle::More;
  BEGIN {
-   plan skip_all => 'test requires Clustericious 0.9925'
+   skip_all 'test requires Clustericious 0.9925'
      unless eval q{ use Clustericious 1.00; 1 };
-   plan skip_all => 'test requires PlugAuth::Lite'
+   skip_all 'test requires PlugAuth::Lite'
      unless eval q{ use PlugAuth::Lite 0.30; 1 };
  };
 
@@ -709,7 +713,7 @@ sub create_plugauth_lite_ok
 {
   my($self, %args) = @_;
   my $ok = 1;
-  my $tb = __PACKAGE__->builder;
+  my $ctx = context();
   
   if(eval q{ use Clustericious; 1 } && ! eval q{ use Clustericious 0.9925; 1 })
   {
@@ -738,13 +742,14 @@ sub create_plugauth_lite_ok
     };
     if(my $error = $@)
     {
-      $tb->diag("error: $error");
+      $ctx->diag("error: $error");
       $ok = 0;
     }
   }
   
-  $tb->ok($ok, "PlugAuth::Lite instance on " . $self->{auth_url});
-  $tb->diag($_) for @diag;
+  $ctx->ok($ok, "PlugAuth::Lite instance on " . $self->{auth_url});
+  $ctx->diag($_) for @diag;
+  $ctx->release;
   
   return $self;
 }
@@ -767,7 +772,7 @@ sub stop_ok
 {
   my($self, $index, $test_name) = @_;
   my $ok = 1;
-  my $tb = __PACKAGE__->builder;
+  my $ctx = context();
   
   my $error;
   
@@ -797,9 +802,10 @@ sub stop_ok
   
   $test_name //= "stop service ($index)";
   
-  my $ret = $tb->ok($ok, $test_name);
+  my $ret = $ctx->ok($ok, $test_name);
   
-  $tb->diag($error) if $error;
+  $ctx->diag($error) if $error;
+  $ctx->release;
   
   $ret;
 }
@@ -819,7 +825,7 @@ sub start_ok
 {
   my($self, $index, $test_name) = @_;
   my $ok = 1;
-  my $tb = __PACKAGE__->builder;
+  my $ctx = context();
   
   my $error;
 
@@ -833,7 +839,7 @@ sub start_ok
     };
     if(my $error = $@)
     {
-      $tb->diag("error in start: $error");
+      $ctx->diag("error in start: $error");
       $ok = 0;
     }
 
@@ -853,11 +859,11 @@ sub start_ok
 
   $test_name //= "start service ($index)";
   
-  my $ret = $tb->ok($ok, $test_name);
-
-  $tb->diag($error) if $error;
-
-  $ret;
+  $ctx->ok($ok, $test_name);
+  $ctx->diag($error) if $error;
+  $ctx->release;
+  
+  $ok;
 }
 
 =head2 is_stopped
@@ -877,8 +883,10 @@ sub is_stopped
   
   $test_name //= "servers ($index) is stopped";
   
-  my $tb = __PACKAGE__->builder;
-  $tb->ok($ok, $test_name);
+  my $ctx = context();
+  $ctx->ok($ok, $test_name);
+  $ctx->release;
+  $ok;
 }
 
 =head2 isnt_stopped
@@ -898,8 +906,11 @@ sub isnt_stopped
   
   $test_name //= "servers ($index) is not stopped";
   
-  my $tb = __PACKAGE__->builder;
-  $tb->ok($ok, $test_name);
+  my $ctx = context();
+  $ctx->ok($ok, $test_name);
+  $ctx->release;
+  
+  $ok;
 }
 
 =head2 create_ua
@@ -942,7 +953,7 @@ sub extract_data_section
   $caller //= caller;
   my $all = Mojo::Loader::data_section $caller;
   my $home = File::HomeDir->my_home;
-  my $tb = __PACKAGE__->builder;
+  my $ctx = context();
 
   foreach my $name (keys %$all)
   {
@@ -953,18 +964,19 @@ sub extract_data_section
 
     unless(-d "$home/$dir")
     {
-      $tb->note("[extract] DIR  $home/$dir");
+      $ctx->note("[extract] DIR  $home/$dir");
       File::Path::mkpath "$home/$dir", 0, 0700;
     }
     unless(-f "$home/$dir/$basename")
     {
-      $tb->note("[extract] FILE $home/$dir/$basename");
+      $ctx->note("[extract] FILE $home/$dir/$basename");
       open my $fh, '>', "$home/$dir/$basename";
       print $fh $all->{$name};
       close $fh;
     }
   }
   
+  $ctx->release;
   $class;
 }
 

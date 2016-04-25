@@ -2,7 +2,9 @@ use strict;
 use warnings;
 eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
-use Test::More tests => 7;
+use Test2::Bundle::More;
+
+plan 7;
 
 my $cluster = Test::Clustericious::Cluster->new;
 

@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 
-plan tests => 4;
+plan 4;
 
 my $cluster = Test::Clustericious::Cluster->new;
 

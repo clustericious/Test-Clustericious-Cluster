@@ -1,12 +1,12 @@
 use strict;
 use warnings;
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 
-plan skip_all => 'test requires Clustericious 1.06'
+skip_all 'test requires Clustericious 1.06'
   unless eval q{ use Clustericious 1.06; 1; };
 
-plan tests => 2;
+plan 2;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok('Foo::Bar');

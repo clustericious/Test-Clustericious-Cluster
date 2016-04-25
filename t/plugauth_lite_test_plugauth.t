@@ -1,15 +1,15 @@
 use strict;
 use warnings;
 BEGIN { eval q{ use File::HomeDir::Test } }
-use Test::More;
-BEGIN { plan skip_all => 'borked' }
+use Test2::Bundle::More;
+BEGIN { skip_all 'borked' }
 BEGIN {
-  plan skip_all => 'test requires Clustericious 1.00'
+  skip_all 'test requires Clustericious 1.00'
     unless eval q{ use Clustericious 1.00; 1};
 }
 use Test::PlugAuth;
 
-plan tests => 5;
+plan 5;
 
 my $auth = Test::PlugAuth->new(auth => sub {
   my($user, $pass) = @_;

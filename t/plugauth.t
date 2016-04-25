@@ -2,13 +2,13 @@ use strict;
 use warnings;
 eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 use PlugAuth::Lite;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 1.17'
+  skip_all 'test requires Clustericious 1.17'
     unless eval q{ use Clustericious 1.17; 1 };
 };
-plan tests => 12;
+plan 12;
 
 my $cluster = Test::Clustericious::Cluster->new;
 

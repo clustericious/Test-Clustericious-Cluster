@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 use Test::Clustericious::Cluster;
-use Test::More tests => 10;
+use Test2::Bundle::More;
+
+plan 10;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(['Foo' => { arg1 => 'one', arg2 => 'two' }]);

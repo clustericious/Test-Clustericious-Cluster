@@ -17,8 +17,10 @@ $modules{$_} = $_ for qw(
   File::HomeDir
   Mojolicious
   PlugAuth
-  Test::Builder::Module
+  Test2
+  Test2::Suite
   Test::More
+  if
 );
 
 

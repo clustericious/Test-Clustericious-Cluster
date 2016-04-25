@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test2::Bundle::More;
 use Test::Mojo;
-
 use PlugAuth::Lite;
+
+plan 11;
 
 my $app = PlugAuth::Lite->new({
   auth => sub {

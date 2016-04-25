@@ -2,9 +2,9 @@ use strict;
 use warnings;
 eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 1.20'
+  skip_all 'test requires Clustericious 1.20'
     unless eval q{
       use Clustericious 1.20;
       use Clustericious::Config;
@@ -13,7 +13,7 @@ BEGIN {
     };
 }
 
-plan tests => 15;
+plan 15;
 
 create_config_ok 'common';
 

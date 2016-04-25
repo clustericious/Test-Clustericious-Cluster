@@ -2,7 +2,9 @@ use strict;
 use warnings;
 use 5.010001;
 use Test::Clustericious::Cluster;
-use Test::More tests => 9;
+use Test2::Bundle::More;
+
+plan 9;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(

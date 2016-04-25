@@ -3,13 +3,13 @@ use warnings;
 BEGIN { $ENV{MOJO_NO_IPV6} = 1; $ENV{MOJO_NO_TLS} = 1; }
 #use Carp::Always::Dump;
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 use IO::Socket::INET;
 
-plan skip_all => 'cannot turn off Mojo IPv6'
+skip_all 'cannot turn off Mojo IPv6'
   if IO::Socket::INET->isa('IO::Socket::IP');
 
-plan tests => 5;
+plan 5;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(qw( MyApp MyApp MyApp ));
@@ -17,7 +17,6 @@ my $t = $cluster->t;
 my @url = @{ $cluster->urls };
 
 subtest 'servers start as up' => sub {
-  plan tests => 6;
   $t->get_ok("$url[0]/foo")
     ->status_is(200);
   $t->get_ok("$url[1]/foo")
@@ -27,18 +26,14 @@ subtest 'servers start as up' => sub {
 };
 
 subtest 'stop middle server' => sub {
-  plan tests => 6;
-
   $cluster->stop_ok(1);
 
   subtest 'left' => sub {
-    plan tests => 2;
     $t->get_ok("$url[0]/foo")
       ->status_is(200);
   };
 
   subtest 'middle' => sub {
-    plan tests => 3;
     my $tx = $t->ua->get("$url[1]/foo");
     ok !$tx->success, "GET $url[1]/foo [connection refused]";
     my $error = $tx->error->{message};
@@ -49,13 +44,11 @@ subtest 'stop middle server' => sub {
   };
   
   subtest 'right' => sub {
-    plan tests => 2;
     $t->get_ok("$url[2]/foo")
       ->status_is(200);
   };
   
   subtest 'middle with new ua' => sub {
-    plan tests => 3;
     
     my $ua = $cluster->create_ua;
     
@@ -71,7 +64,6 @@ subtest 'stop middle server' => sub {
   };
   
   subtest 'is_stopped / isnt_stopped' => sub {
-    plan tests => 3;
     $cluster->isnt_stopped(0);
     $cluster->is_stopped(1);
     $cluster->isnt_stopped(2);
@@ -79,7 +71,6 @@ subtest 'stop middle server' => sub {
 };
 
 subtest 'restart middle server' => sub {
-  plan tests => 8;
   $cluster->start_ok(1);
 
   $t->get_ok("$url[0]/foo")
@@ -90,7 +81,6 @@ subtest 'restart middle server' => sub {
     ->status_is(200);
     
   subtest 'with create_ua' => sub {
-    plan tests => 3;
     my $ua = $cluster->create_ua;
     
     my $tx = $ua->get("$url[1]/foo");
@@ -105,7 +95,6 @@ subtest 'restart middle server' => sub {
 subtest 'stop end server using relative url' => sub {
 
   subtest 'get before stop' => sub {
-    plan tests => 4;
     $t->get_ok('/foo')
       ->status_is(200)
       ->content_is('bar2');
@@ -115,7 +104,6 @@ subtest 'stop end server using relative url' => sub {
   $cluster->stop_ok(2);
 
   subtest 'get after stop' => sub {
-    plan tests => 1;
     ok !$t->ua->server->app;
 
     # we can test this but it times out
@@ -130,7 +118,6 @@ subtest 'stop end server using relative url' => sub {
   $cluster->start_ok(2);
 
   subtest 'get before stop' => sub {
-    plan tests => 4;
     $t->get_ok('/foo')
       ->status_is(200)
       ->content_is('bar2');

@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 1.00'
+  skip_all 'test requires Clustericious 1.00'
     unless eval q{
       use Clustericious 1.00;
       use Test::Clustericious::Config;
@@ -11,7 +11,7 @@ BEGIN {
     };
 }
 
-plan tests => 5;
+plan 5;
 
 my $bin = create_directory_ok 'bin';
 

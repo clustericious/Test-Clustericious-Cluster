@@ -1,9 +1,13 @@
 use strict;
 use warnings;
 use Test::Clustericious::Cluster;
-use Test::More tests => 2;
+use Test2::Bundle::More;
 
-use_ok('Net::hostent');
+plan 2;
+
+eval q{ use Net::hostent };
+is $@, '';
+
 is gethost('bar')->name, 'foo.example.com', 'gethost(bar).name = foo.example.com';
 
 __DATA__

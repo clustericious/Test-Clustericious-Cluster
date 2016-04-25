@@ -4,6 +4,7 @@ Test an imaginary beowulf cluster of Clustericious services
 
 # SYNOPSIS
 
+    use Test2::Bundle::More;
     use Test::Clustericious::Cluster;
     
     # suppose MyApp1 isa Clustericious::App and
@@ -16,6 +17,8 @@ Test an imaginary beowulf cluster of Clustericious services
     
     $t->get_ok("$url[0]/arbitrary_path");  # tests against MyApp1
     $t->get_ok("$url[1]/another_path");    # tests against MyApp2
+    
+    done_testing;
     
     __DATA__
     
@@ -112,9 +115,13 @@ example that mocks parts of [Net::hostent](https://metacpan.org/pod/Net::hostent
     use strict;
     use warnings;
     use Test::Clustericious::Cluster;
-    use Test::More tests => 2;
+    use Test2::Bundle::More;
     
-    use_ok('Net::hostent');
+    plan 2;
+    
+    eval q{ use Net::hostent };
+    is $@, '';
+    
     is gethost('bar')->name, 'foo.example.com', 'gethost(bar).name = foo.example.com';
     
     __DATA__
@@ -263,11 +270,11 @@ For example:
     use strict;
     use warnings;
     use Test::Clustericious::Cluster;
-    use Test::More;
+    use Test2::Bundle::More;
     BEGIN {
-      plan skip_all => 'test requires Clustericious 0.9925'
+      skip_all 'test requires Clustericious 0.9925'
         unless eval q{ use Clustericious 1.00; 1 };
-      plan skip_all => 'test requires PlugAuth::Lite'
+      skip_all 'test requires PlugAuth::Lite'
         unless eval q{ use PlugAuth::Lite 0.30; 1 };
     };
 

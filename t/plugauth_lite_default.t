@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test2::Bundle::More;
 use Test::Mojo;
-
 use Mojolicious::Lite;
+
+plan 14;
 
 plugin 'plug_auth_lite';
 

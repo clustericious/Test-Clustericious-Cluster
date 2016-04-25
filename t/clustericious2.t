@@ -2,12 +2,12 @@ use strict;
 use warnings;
 eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 1.00'
+  skip_all 'test requires Clustericious 1.00'
     unless eval q{ use Clustericious 1.00; 1};
 }
-plan tests => 14;
+plan 14;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok(qw( MyApp1 MyApp2 ));

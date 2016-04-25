@@ -2,9 +2,9 @@ use strict;
 use warnings;
 eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
-use Test::More;
+use Test2::Bundle::More;
 BEGIN {
-  plan skip_all => 'test requires Clustericious 1.00'
+  skip_all 'test requires Clustericious 1.00'
     unless eval q{ 
       use Clustericious 1.00;
       1;
@@ -14,9 +14,9 @@ use Clustericious::Client;
 use Test::Clustericious::Config;
 use File::HomeDir;
 
-plan skip_all => 'test requires Clustericious::Client 1.01'
+skip_all 'test requires Clustericious::Client 1.01'
   unless Clustericious::Client->can('_mojo_user_agent_factory');
-plan tests => 5;
+plan 4;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok('MyApp');
@@ -27,7 +27,7 @@ note "  $_" for do {
   <$fh>;
 };
 
-use_ok 'MyApp::Client';
+require MyApp::Client;
 
 my $client = eval { MyApp::Client->new };
 diag $@ if $@;
