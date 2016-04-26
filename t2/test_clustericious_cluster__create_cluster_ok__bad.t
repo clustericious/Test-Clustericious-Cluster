@@ -53,5 +53,3 @@ sub startup
 }
 
 1;
-
-1;
