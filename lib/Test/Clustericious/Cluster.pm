@@ -774,7 +774,7 @@ sub stop_ok
   }
   else
   {
-    $tb->diag("no such app for index: $index");
+    $error = "no such app for index: $index";
     $ok = 0;
   }
   
@@ -806,6 +806,8 @@ sub start_ok
   my $ok = 1;
   my $tb = __PACKAGE__->builder;
   
+  my $error;
+
   my $app = $self->apps->[$index];
   if(defined $app)
   {
@@ -823,7 +825,7 @@ sub start_ok
   }
   else
   {
-    $tb->diag("no such app for index: $index");
+    $error = "no such app for index: $index";
     $ok = 0;
   }
   
@@ -836,7 +838,11 @@ sub start_ok
 
   $test_name //= "start service ($index)";
   
-  $tb->ok($ok, $test_name);
+  my $ret = $tb->ok($ok, $test_name);
+
+  $tb->diag($error) if $error;
+
+  $ret;
 }
 
 =head2 is_stopped
