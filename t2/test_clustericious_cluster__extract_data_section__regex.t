@@ -6,19 +6,13 @@ use Test::Clustericious::Cluster;
 my $cluster = Test::Clustericious::Cluster->new;
 
 is(
-  intercept { $cluster->extract_data_section },
+  intercept { $cluster->extract_data_section(qr{foo\.txt}) },
   array {
     event Note => sub {
-      call message => match qr{\[extract\] DIR  };
+      call message => match qr{\[extract\] DIR  .*some[/\\]dir};
     };
     event Note => sub {
-      call message => match qr{\[extract\] FILE };
-    };
-    event Note => sub {
-      call message => match qr{\[extract\] DIR  };
-    };
-    event Note => sub {
-      call message => match qr{\[extract\] FILE };
+      call message => match qr{\[extract\] FILE .*some[/\\]dir[/\\]foo.txt};
     };
     end;
   },
