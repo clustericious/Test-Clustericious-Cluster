@@ -703,11 +703,13 @@ sub create_plugauth_lite_ok
   {
     croak "creat_plugin_lite_ok requires Clustericious 0.9925 or better (see Test::Clustericious::Test for details)";
   }
-  
+
+  my @diag;
+
   if($self->{auth_ua} || $self->{auth_url})
   {
     $ok = 0;
-    $tb->diag("only use create_plugauth_lite_ok once");
+    push @diag, 'only use create_plugauth_lite_ok once';
   }
   else
   {
@@ -730,6 +732,7 @@ sub create_plugauth_lite_ok
   }
   
   $tb->ok($ok, "PlugAuth::Lite instance on " . $self->{auth_url});
+  $tb->diag($_) for @diag;
   
   return $self;
 }
