@@ -145,7 +145,7 @@ If not provided, then a new one will be created.
 =head3 lite_path
 
 List reference of paths to search for L<Mojolicious::Lite>
-apps.
+or PSGI apps.
 
 =cut
 
@@ -591,6 +591,14 @@ sub create_cluster_ok
           if(my $error = $@)
           { push @errors, [ $app_name, $error ] }
           last;
+        }
+        
+        if(-e "$dir/$app_name.psgi")
+        {
+          require Mojolicious;
+          require Mojolicious::Plugin::MountPSGI;
+          $app = Mojolicious->new;
+          $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$dir/$app_name.psgi" });
         }
       }
     }
