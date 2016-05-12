@@ -435,9 +435,44 @@ sub _generate_port
   )->sockport;
 }
 
+sub _create_config_helper
+{
+  my($self) = @_;
+
+  my $helper = sub { return $self };
+        
+  my $class;
+          
+  unless(defined $class)
+  {
+    if(eval q{ require Clustericious::Config::Helpers; 1})
+    {
+      $class = 'Clustericious::Config::Helpers';
+      push @Clustericious::Config::Helpers::EXPORT, 'cluster';
+    }
+    elsif(eval q{ Clustericious::Config::Plugin; 1 })
+    {
+      $class = 'Clustericious::Config::Plugin';
+      push @Clustericious::Config::Plugin::EXPORT, 'cluster';
+    }
+  }
+  
+  return unless $class;
+        
+  do {
+    # there are a multitude of sins here aren't there?
+    no warnings 'redefine';
+    no warnings 'once';
+    no strict 'refs';
+    *{join '::', $class, 'cluster'} = $helper;
+  };
+}
+
 sub create_cluster_ok
 {
   my $self = shift;
+
+  $self->_create_config_helper;
   
   my $total = scalar @_;
   my @urls = map { 
@@ -448,8 +483,6 @@ sub create_cluster_ok
   push @{ $self->{urls} }, @urls;
   
   my @errors;
-  
-  my $has_clustericious_config = 0;
   
   my $caller = caller;
   Mojo::Loader::load_class($caller) if $caller ne 'main';
@@ -495,37 +528,6 @@ sub create_cluster_ok
         print $fh $config;
         close $fh;
         $config = {};
-        
-        unless($has_clustericious_config)
-        {
-          $has_clustericious_config = 1;
-          my $helper = sub { return $self };
-        
-          state $class;
-          
-          unless(defined $class)
-          {
-            if(eval q{ require Clustericious::Config::Helpers; 1})
-            {
-              $class = 'Clustericious::Config::Helpers';
-              push @Clustericious::Config::Helpers::EXPORT, 'cluster';
-            }
-            else
-            {
-              require Clustericious::Config::Plugin;
-              $class = 'Clustericious::Config::Plugin';
-              push @Clustericious::Config::Plugin::EXPORT, 'cluster';
-            }
-          }
-        
-          do {
-            # there are a multitude of sins here aren't there?
-            no warnings 'redefine';
-            no warnings 'once';
-            no strict 'refs';
-            *{join '::', $class, 'cluster'} = $helper;
-          };
-        }
       }
     }
     else

@@ -155,7 +155,7 @@ If not provided, then a new one will be created.
 ### lite\_path
 
 List reference of paths to search for [Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite)
-apps.
+or PSGI apps.
 
 # ATTRIBUTES
 
