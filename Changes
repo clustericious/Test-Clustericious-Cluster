@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.32      2016-05-12 19:24:50 -0400
   - Also search for .psgi files in the "lite_path"
   - Always create the "cluster" config helper if
     Clustericious is installed.
