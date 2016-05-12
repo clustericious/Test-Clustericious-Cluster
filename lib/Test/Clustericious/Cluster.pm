@@ -173,7 +173,7 @@ sub new
   unshift @$lite_path, ref($args->{lite_path}) ? @{ $args->{lite_path} } : ($args->{lite_path});
   
   bless { 
-    #t           => $t, 
+    t           => $args->{t},
     urls        => [], 
     apps        => [], 
     stopped     => [],
