@@ -579,7 +579,7 @@ sub create_cluster_ok
         require Mojolicious::Plugin::MountPSGI;
         $app = Mojolicious->new;
         # TODO: check syntax of .psgi file?
-        $self->extract_data_section("script/psgi_name", $caller);
+        $self->extract_data_section("script/$psgi_name", $caller);
         $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$home/script/$psgi_name" });
       }
     }
