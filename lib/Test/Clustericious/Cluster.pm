@@ -534,6 +534,8 @@ sub create_cluster_ok
     {
       $app_name = $item;
     }
+    my $psgi_name = $app_name =~ /\.psgi$/ ? $app_name : "$app_name.psgi";
+
     
     my $app;
     # we want to try to load class first, so that YourApp.pm
@@ -570,15 +572,15 @@ sub create_cluster_ok
         { push @errors, [ $app_name, $error ] }
       }
       
-      if(my $script = Mojo::Loader::data_section($caller, "script/$app_name.psgi"))
+      if(my $script = Mojo::Loader::data_section($caller, "script/$psgi_name"))
       {
         my $home = File::HomeDir->my_home;
         require Mojolicious;
         require Mojolicious::Plugin::MountPSGI;
         $app = Mojolicious->new;
         # TODO: check syntax of .psgi file?
-        $self->extract_data_section("script/$app_name.psgi", $caller);
-        $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$home/script/$app_name.psgi" });
+        $self->extract_data_section("script/psgi_name", $caller);
+        $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$home/script/$psgi_name" });
       }
     }
     
@@ -595,12 +597,12 @@ sub create_cluster_ok
           last;
         }
         
-        if(-e "$dir/$app_name.psgi")
+        if(-e "$dir/$psgi_name")
         {
           require Mojolicious;
           require Mojolicious::Plugin::MountPSGI;
           $app = Mojolicious->new;
-          $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$dir/$app_name.psgi" });
+          $app->plugin('Mojolicious::Plugin::MountPSGI' => { '/' => "$dir/$psgi_name" });
         }
       }
     }
