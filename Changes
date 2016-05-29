@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.33      2016-05-29 10:27:38 +0200
+  - You can now explicitly add .psgi extension to PSGI apps.
+
 0.32      2016-05-12 19:24:50 -0400
   - Also search for .psgi files in the "lite_path"
   - Always create the "cluster" config helper if
