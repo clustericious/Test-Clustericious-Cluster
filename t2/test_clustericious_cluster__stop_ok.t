@@ -61,6 +61,7 @@ todo "out of bounds testing" => sub {
         call pass => F();
       };
       # TODO: test diagnostic also
+      etc();
     },
     'is_stopped fails with out of bound server',
   );

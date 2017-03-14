@@ -25,6 +25,7 @@ is(
       call scheme => 'http';
       call path => '';
     };
+    etc;
   },
   'urls',
 );
