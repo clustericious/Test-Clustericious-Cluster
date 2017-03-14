@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Migrate to using Test2 + Test2::Suite
 
 0.33      2016-05-29 10:27:38 +0200
   - You can now explicitly add .psgi extension to PSGI apps.

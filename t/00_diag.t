@@ -16,6 +16,7 @@ $modules{$_} = $_ for qw(
   ExtUtils::MakeMaker
   File::HomeDir
   Mojolicious
+  Path::Class
   PlugAuth
   Test2
   Test2::Suite

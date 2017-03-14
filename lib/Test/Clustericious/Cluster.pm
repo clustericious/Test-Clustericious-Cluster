@@ -127,7 +127,7 @@ that use resources that aren't easily available during
 unit testing, or may change from host to host.  Here is an
 example that mocks parts of L<Net::hostent>:
 
-# EXAMPLE: t/mock2.t
+# EXAMPLE: t/orig_mock2.t
 
 =cut
 
