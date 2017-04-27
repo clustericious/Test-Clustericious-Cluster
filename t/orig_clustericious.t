@@ -4,9 +4,9 @@ eval q{ use Test::Clustericious::Log };
 use Test::Clustericious::Cluster;
 use Test2::Bundle::More;
 BEGIN {
-  skip_all 'test requires Clustericious 1.20'
+  skip_all 'test requires Clustericious 1.24'
     unless eval q{
-      use Clustericious 1.20;
+      use Clustericious 1.24;
       use Clustericious::Config;
       use Test::Clustericious::Config;
       1;

@@ -5,8 +5,8 @@ use Test::Clustericious::Cluster;
 use Test2::Bundle::More;
 use PlugAuth::Lite;
 BEGIN {
-  skip_all 'test requires Clustericious 1.17'
-    unless eval q{ use Clustericious 1.17; 1 };
+  skip_all 'test requires Clustericious 1.24'
+    unless eval q{ use Clustericious 1.24; 1 };
 };
 plan 12;
 

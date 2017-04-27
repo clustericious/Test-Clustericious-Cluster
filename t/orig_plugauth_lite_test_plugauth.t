@@ -4,8 +4,8 @@ BEGIN { eval q{ use File::HomeDir::Test } }
 use Test2::Bundle::More;
 BEGIN { skip_all 'borked' }
 BEGIN {
-  skip_all 'test requires Clustericious 1.00'
-    unless eval q{ use Clustericious 1.00; 1};
+  skip_all 'test requires Clustericious 1.24'
+    unless eval q{ use Clustericious 1.24; 1};
 }
 use Test::PlugAuth;
 

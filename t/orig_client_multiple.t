@@ -3,8 +3,8 @@ use warnings;
 use Test::Clustericious::Cluster;
 use Test2::Bundle::More;
 
-skip_all 'Test requires Clustericious 1.12'
-  unless eval q{ use Clustericious 1.14; 1 };
+skip_all 'Test requires Clustericious 1.24'
+  unless eval q{ use Clustericious 1.24; 1 };
 
 plan 4;
 
