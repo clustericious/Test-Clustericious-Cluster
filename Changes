@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.35      2017-04-27 08:37:00 -0400
+  - Bump Clustericious tests to requrie 1.24 for Mojolicious 7.31 compat
+
 0.34      2017-03-14 10:59:52 -0400
   - Migrate to using Test2 + Test2::Suite
 
