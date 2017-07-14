@@ -16,7 +16,6 @@ use File::HomeDir;
 
 skip_all 'test requires Clustericious::Client 1.01'
   unless Clustericious::Client->can('_mojo_user_agent_factory');
-plan 4;
 
 my $cluster = Test::Clustericious::Cluster->new;
 $cluster->create_cluster_ok('MyApp');
@@ -35,6 +34,8 @@ isa_ok $client, 'MyApp::Client';
 
 is $client->welcome, 'welcome', 'welcome returns welcome';
 is $client->version->[0], '1.00', 'version = 1.00';
+
+done_testing;
 
 __DATA__
 

@@ -9,8 +9,6 @@ BEGIN {
 }
 use Test::PlugAuth;
 
-plan 5;
-
 my $auth = Test::PlugAuth->new(auth => sub {
   my($user, $pass) = @_;
   return $user eq 'gooduser' && $pass eq 'goodpass';
@@ -48,3 +46,4 @@ $t->get_ok("http://baduser:badpass\@localhost:$port/private")
 $t->get_ok("http://gooduser:goodpass\@localhost:$port/private")
   ->status_is(200);
 
+done_testing;

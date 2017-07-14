@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Migrate to using Test2::V0
 
 0.35      2017-04-27 08:37:00 -0400
   - Bump Clustericious tests to requrie 1.24 for Mojolicious 7.31 compat

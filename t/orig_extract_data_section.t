@@ -5,8 +5,6 @@ use Test::Clustericious::Cluster;
 use Test2::Bundle::More;
 use File::HomeDir;
 
-plan 2;
-
 my $cluster = Test::Clustericious::Cluster->new;
 
 my $home = File::HomeDir->my_home;
@@ -38,6 +36,8 @@ subtest 'selection' => sub {
   close $fh;
   like $content, qr{^some data}, "content matches";
 };
+
+done_testing;
 
 __DATA__
 
