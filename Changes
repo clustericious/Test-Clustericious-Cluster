@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.36_01   2017-07-14 11:10:19 -0400
   - Migrate to using Test2::V0
 
 0.35      2017-04-27 08:37:00 -0400
