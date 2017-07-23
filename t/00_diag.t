@@ -14,12 +14,12 @@ $modules{$_} = $_ for qw(
   Clustericious
   EV
   ExtUtils::MakeMaker
-  File::HomeDir
   Mojolicious
   Path::Class
   PlugAuth
   Test2::API
   Test2::Bundle::More
+  Test2::Plugin::FauxHomeDir
   Test2::V0
 );
 

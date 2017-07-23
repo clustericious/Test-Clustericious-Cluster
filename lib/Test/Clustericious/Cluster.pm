@@ -3,9 +3,9 @@ package Test::Clustericious::Cluster;
 use strict;
 use warnings;
 use 5.010001;
-use if !$INC{'File/HomeDir/Test.pm'}, 'File::HomeDir::Test';
+use Test2::Plugin::FauxHomeDir;
 use Test2::API qw( context );
-use File::HomeDir;
+use File::Glob qw( bsd_glob );
 use Mojo::URL;
 use Mojo::Loader;
 use Mojo::UserAgent;
@@ -46,14 +46,14 @@ use Test::Mojo;
 =head1 DESCRIPTION
 
 This module allows you to test an entire cluster of Clustericious services
-(or just one or two).  The only prerequisites are L<Mojolicious> and 
-L<File::HomeDir>, so you can mix and match L<Mojolicious>, L<Mojolicious::Lite>
-and full L<Clustericious> apps and test how they interact.
+(or just one or two).  The only prerequisites are L<Mojolicious>, and
+L<Test2::Plugin::FauxHomeDir> so you can mix and match L<Mojolicious>,
+L<Mojolicious::Lite> and full L<Clustericious> apps and test how they interact.
 
 If you are testing against Clustericious applications, it is important to
-either use this module as early as possible, or use L<File::HomeDir::Test>
+either use this module as early as possible, or use L<Test2::Plugin::FauxHomeDir>
 as the very first module in your test, as testing Clustericious configurations
-depend on the testing home directory being setup by L<File::HomeDir::Test>.
+depend on the testing home directory being setup by L<Test2::Plugin::FauxHomeDir>.
 
 In addition to passing L<Clustericious> configurations into the
 C<create_cluster_ok> method as describe below, you can include configuration
@@ -349,7 +349,7 @@ BEGIN {
     # fake out %INC because Mojo::Home freeks the heck
     # out when it sees a CODEREF on some platforms
     # in %INC
-    my $home = File::HomeDir->my_home;
+    my $home = bsd_glob '~';
     mkdir "$home/lib" unless -d "$home/lib";
     $INC{$file} = "$home/lib/$file";
   
@@ -493,7 +493,7 @@ sub create_cluster_ok
 
   local @INC = @INC;
   $self->extract_data_section(qr{^lib/}, $caller);
-  my $home = File::HomeDir->my_home;
+  my $home = bsd_glob '~';
   unshift @INC, "$home/lib"
     if -d "$home/lib";
 
@@ -522,7 +522,7 @@ sub create_cluster_ok
       ($app_name, $config, $cb) = @{ $item };
       unless(ref $config)
       {
-        my $home = File::HomeDir->my_home;
+        my $home = bsd_glob '~';
         mkdir "$home/etc" unless -d "$home/etc";
         open my $fh, '>', do {
           my $fn = $app_name;
@@ -569,7 +569,7 @@ sub create_cluster_ok
     {
       if(my $script = Mojo::Loader::data_section($caller, "script/$app_name"))
       {
-        my $home = File::HomeDir->my_home;
+        my $home = bsd_glob '~';
         mkdir "$home/script" unless -d "$home/script";
         $app = _load_lite_app("$home/script/$app_name", $script);
         if(my $error = $@)
@@ -578,7 +578,7 @@ sub create_cluster_ok
       
       if(my $script = Mojo::Loader::data_section($caller, "script/$psgi_name"))
       {
-        my $home = File::HomeDir->my_home;
+        my $home = bsd_glob '~';
         require Mojolicious;
         require Mojolicious::Plugin::MountPSGI;
         $app = Mojolicious->new;
@@ -638,6 +638,7 @@ sub create_cluster_ok
       my $fn = $app_name;
       $fn =~ s{::}{-}g;
       $fn = "$home/etc/$fn.conf";
+      mkdir "$home/etc" unless -d "$home/etc";
       unless(-e $fn)
       {
         # YAML::XS is a prereq for Clustericious
@@ -952,7 +953,7 @@ sub extract_data_section
   
   $caller //= caller;
   my $all = Mojo::Loader::data_section $caller;
-  my $home = File::HomeDir->my_home;
+  my $home = bsd_glob '~';
   my $ctx = context();
 
   foreach my $name (keys %$all)

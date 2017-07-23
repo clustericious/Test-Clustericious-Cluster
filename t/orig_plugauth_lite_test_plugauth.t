@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-BEGIN { eval q{ use File::HomeDir::Test } }
+use Test2::Plugin::FauxHomeDir;
 use Test2::Bundle::More;
 BEGIN { skip_all 'borked' }
 BEGIN {

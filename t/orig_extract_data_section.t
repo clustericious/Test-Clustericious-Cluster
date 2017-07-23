@@ -3,11 +3,11 @@ use warnings;
 use 5.010001;
 use Test::Clustericious::Cluster;
 use Test2::Bundle::More;
-use File::HomeDir;
+use File::Glob qw( bsd_glob );
 
 my $cluster = Test::Clustericious::Cluster->new;
 
-my $home = File::HomeDir->my_home;
+my $home = bsd_glob '~';
 
 subtest 'selection' => sub {
   plan 5;

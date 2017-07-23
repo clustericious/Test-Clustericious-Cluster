@@ -1,6 +1,6 @@
 use Test2::V0 -no_srand => 1;
 use Test::Clustericious::Cluster;
-use File::HomeDir;
+use File::Glob qw( bsd_glob );
 use Path::Class qw( file );
 
 my $cluster = Test::Clustericious::Cluster->new;
@@ -19,7 +19,7 @@ is(
   "extract 'em all",
 );
 
-my @files = map { file( File::HomeDir->my_home, @$_ ) } [ qw( some dir foo.txt ) ];
+my @files = map { file( bsd_glob('~'), @$_ ) } [ qw( some dir foo.txt ) ];
 
 ok -f $_, $_ for @files;
 

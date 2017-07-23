@@ -5,13 +5,13 @@ is(
   intercept { Test::Clustericious::Cluster->new->create_cluster_ok( qw( Foo Bar ) ) },
   array {
     event Note => sub {
-      call message => match qr{\[extract\] DIR  .*/my_home/lib$};
+      call message => match qr{\[extract\] DIR  .*/home/.*/lib$};
     };
     event Note => sub {
-      call message => match qr{\[extract\] FILE .*/my_home/lib/(Foo|Bar)\.pm$};
+      call message => match qr{\[extract\] FILE .*/home/.*/lib/(Foo|Bar)\.pm$};
     };
     event Note => sub {
-      call message => match qr{\[extract\] FILE .*/my_home/lib/(Foo|Bar)\.pm$};
+      call message => match qr{\[extract\] FILE .*/home/.*/lib/(Foo|Bar)\.pm$};
     };
     event Ok => sub {
       call pass => T();

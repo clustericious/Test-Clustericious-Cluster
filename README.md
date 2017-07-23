@@ -31,14 +31,14 @@ Test an imaginary beowulf cluster of Clustericious services
 # DESCRIPTION
 
 This module allows you to test an entire cluster of Clustericious services
-(or just one or two).  The only prerequisites are [Mojolicious](https://metacpan.org/pod/Mojolicious) and 
-[File::HomeDir](https://metacpan.org/pod/File::HomeDir), so you can mix and match [Mojolicious](https://metacpan.org/pod/Mojolicious), [Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite)
-and full [Clustericious](https://metacpan.org/pod/Clustericious) apps and test how they interact.
+(or just one or two).  The only prerequisites are [Mojolicious](https://metacpan.org/pod/Mojolicious), and
+[Test2::Plugin::FauxHomeDir](https://metacpan.org/pod/Test2::Plugin::FauxHomeDir) so you can mix and match [Mojolicious](https://metacpan.org/pod/Mojolicious),
+[Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite) and full [Clustericious](https://metacpan.org/pod/Clustericious) apps and test how they interact.
 
 If you are testing against Clustericious applications, it is important to
-either use this module as early as possible, or use [File::HomeDir::Test](https://metacpan.org/pod/File::HomeDir::Test)
+either use this module as early as possible, or use [Test2::Plugin::FauxHomeDir](https://metacpan.org/pod/Test2::Plugin::FauxHomeDir)
 as the very first module in your test, as testing Clustericious configurations
-depend on the testing home directory being setup by [File::HomeDir::Test](https://metacpan.org/pod/File::HomeDir::Test).
+depend on the testing home directory being setup by [Test2::Plugin::FauxHomeDir](https://metacpan.org/pod/Test2::Plugin::FauxHomeDir).
 
 In addition to passing [Clustericious](https://metacpan.org/pod/Clustericious) configurations into the
 `create_cluster_ok` method as describe below, you can include configuration
