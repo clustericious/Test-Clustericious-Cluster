@@ -1,4 +1,4 @@
-# Test::Clustericious::Cluster [![Build Status](https://secure.travis-ci.org/clustericious/Test-Clustericious-Cluster.png)](http://travis-ci.org/clustericious/Test-Clustericious-Cluster) [![Build status](https://ci.appveyor.com/api/projects/status/7v40i5e8n3jlm2vi/branch/master?svg=true)](https://ci.appveyor.com/project/clustericious/Test-Clustericious-Cluster/branch/master)
+# Test::Clustericious::Cluster [![Build Status](https://secure.travis-ci.org/clustericious/Test-Clustericious-Cluster.png)](http://travis-ci.org/clustericious/Test-Clustericious-Cluster)
 
 Test an imaginary beowulf cluster of Clustericious services
 
