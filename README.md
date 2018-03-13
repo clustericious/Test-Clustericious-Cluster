@@ -1,6 +1,6 @@
 # Test::Clustericious::Cluster [![Build Status](https://secure.travis-ci.org/clustericious/Test-Clustericious-Cluster.png)](http://travis-ci.org/clustericious/Test-Clustericious-Cluster)
 
-Test an imaginary beowulf cluster of Clustericious services
+(Deprecated) Test an imaginary beowulf cluster of Clustericious services
 
 # SYNOPSIS
 
@@ -29,6 +29,9 @@ Test an imaginary beowulf cluster of Clustericious services
     url_for_my_app2: <%= cluster->urls->[1] %>
 
 # DESCRIPTION
+
+**NOTE**: This module has been deprecated, and may be removed on or after 31 December 2018.
+Please see [https://github.com/clustericious/Clustericious/issues/46](https://github.com/clustericious/Clustericious/issues/46).
 
 This module allows you to test an entire cluster of Clustericious services
 (or just one or two).  The only prerequisites are [Mojolicious](https://metacpan.org/pod/Mojolicious), and

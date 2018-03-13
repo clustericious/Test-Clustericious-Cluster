@@ -14,7 +14,7 @@ use File::Basename ();
 use File::Path ();
 use Test::Mojo;
 
-# ABSTRACT: Test an imaginary beowulf cluster of Clustericious services
+# ABSTRACT: (Deprecated) Test an imaginary beowulf cluster of Clustericious services
 # VERSION
 
 =head1 SYNOPSIS
@@ -44,6 +44,9 @@ use Test::Mojo;
  url_for_my_app2: <%= cluster->urls->[1] %>
 
 =head1 DESCRIPTION
+
+B<NOTE>: This module has been deprecated, and may be removed on or after 31 December 2018.
+Please see L<https://github.com/clustericious/Clustericious/issues/46>.
 
 This module allows you to test an entire cluster of Clustericious services
 (or just one or two).  The only prerequisites are L<Mojolicious>, and
